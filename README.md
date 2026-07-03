@@ -67,6 +67,11 @@ pnpm dev
 如果需要给国内朋友使用，可以把同一个 GitHub 仓库导入腾讯 EdgeOne Pages。  
 EdgeOne 镜像站和 Vercel 原站共用同一个 Supabase 项目，详细步骤见 `EDGEONE_DEPLOYMENT.md`。
 
+## Cloudflare Pages 免费镜像
+
+如果需要一个不买域名的长期免费镜像，可以把同一个 GitHub 仓库导入 Cloudflare Pages。  
+Cloudflare 会提供长期 `*.pages.dev` 域名，详细步骤见 `CLOUDFLARE_DEPLOYMENT.md`。
+
 ## 上线后测试
 
 - 首页空内容不能投递。
