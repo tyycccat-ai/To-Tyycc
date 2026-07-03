@@ -13,7 +13,8 @@ export async function PATCH(request, { params }) {
       return NextResponse.json({ ok: false, error: "unauthorized" }, { status: 401 });
     }
 
-    const message = await getMessageForAdmin(params.id);
+    const { id } = await params;
+    const message = await getMessageForAdmin(id);
     if (!message) {
       return NextResponse.json({ ok: false, error: "not_found" }, { status: 404 });
     }
@@ -48,7 +49,7 @@ export async function PATCH(request, { params }) {
       return NextResponse.json({ ok: false, error: "no_updates" }, { status: 400 });
     }
 
-    await updateMessage(params.id, updates);
+    await updateMessage(id, updates);
     return NextResponse.json({ ok: true });
   } catch (error) {
     return NextResponse.json({ ok: false, error: "update_failed" }, { status: 500 });
@@ -61,12 +62,13 @@ export async function DELETE(_request, { params }) {
       return NextResponse.json({ ok: false, error: "unauthorized" }, { status: 401 });
     }
 
-    const message = await getMessageForAdmin(params.id);
+    const { id } = await params;
+    const message = await getMessageForAdmin(id);
     if (!message) {
       return NextResponse.json({ ok: false, error: "not_found" }, { status: 404 });
     }
 
-    await deleteMessage(params.id);
+    await deleteMessage(id);
     return NextResponse.json({ ok: true });
   } catch (error) {
     return NextResponse.json({ ok: false, error: "delete_failed" }, { status: 500 });

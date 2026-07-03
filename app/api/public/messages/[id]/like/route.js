@@ -3,7 +3,8 @@ import { likePublicMessage } from "../../../../../../lib/messages";
 
 export async function POST(_request, { params }) {
   try {
-    const likes = await likePublicMessage(params.id);
+    const { id } = await params;
+    const likes = await likePublicMessage(id);
     if (likes === null) {
       return NextResponse.json({ ok: false, error: "not_found" }, { status: 404 });
     }
