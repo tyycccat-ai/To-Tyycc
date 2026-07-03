@@ -1,0 +1,12 @@
+.env
+.env.*
+!.env.example
+node_modules/
+.next/
+out/
+tot_messages.sqlite3
+*.sqlite3
+*.log
+.DS_Store
+.agents/
+.generated-skills/

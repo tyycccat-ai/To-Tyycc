@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#fff7f8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="T o T 公开信" />
+    <title>T o T 公开信</title>
+    <meta name="description" content="T o T 匿名信箱里被公开展示的留言。" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="page-shell public-shell" aria-labelledby="publicTitle">
+      <section class="panel-page">
+        <header class="panel-header">
+          <a class="soft-link panel-back" href="/">回到信箱</a>
+          <div class="mascot small-mascot" aria-hidden="true">T o T</div>
+          <h1 id="publicTitle">公开的信</h1>
+          <p>这些话已经被允许轻轻放在这里。</p>
+        </header>
+
+        <label class="search-box" for="publicSearch">
+          <span>搜索</span>
+          <input
+            id="publicSearch"
+            type="search"
+            autocomplete="off"
+            placeholder="输入关键词或日期"
+          />
+        </label>
+
+        <div class="message-list" id="publicMessages" aria-live="polite"><!-- PUBLIC_MESSAGES_PUBLIC --></div>
+      </section>
+      <footer class="site-footer">ToT · To Tyycc</footer>
+    </main>
+
+    <script src="/initial-public.js?v=heart-webview-1"></script>
+    <script src="public.js?v=heart-webview-1"></script>
+  </body>
+</html>

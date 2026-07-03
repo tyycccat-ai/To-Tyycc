@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#fff7f8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="T o T 匿名信箱" />
+    <title>T o T 匿名信箱</title>
+    <meta
+      name="description"
+      content="ToT 是 To Tyycc 的匿名提问留言箱。你想说的话，我都会认真听。"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="page-shell" aria-labelledby="site-title">
+      <section class="hero" aria-label="ToT 匿名留言箱首页">
+        <img class="avatar" src="assets/avatar.jpg" alt="Tyycc 的头像" />
+
+        <div class="mascot-wrap" aria-live="polite">
+          <div class="mascot" id="mascot" aria-label="T o T 正在等待">T o T</div>
+        </div>
+
+        <h1 class="main-title" id="site-title">匿名信箱</h1>
+
+        <form class="letter-box" id="messageForm">
+          <p class="letter-brand">To Tyycc</p>
+
+          <label class="message-label" for="message">匿名留言</label>
+          <textarea
+            id="message"
+            name="message"
+            rows="6"
+            maxlength="3000"
+            placeholder="你想说的话，我都会认真听"
+          ></textarea>
+
+          <div class="form-row">
+            <label class="nickname">
+              <span>昵称（选填）</span>
+              <input
+                type="text"
+                name="nickname"
+                maxlength="24"
+                autocomplete="off"
+                aria-label="昵称，选填"
+              />
+            </label>
+          </div>
+
+          <label class="public-choice">
+            <input type="checkbox" name="allowPublic" />
+            <span class="box" aria-hidden="true"></span>
+            <span>允许公开我的留言</span>
+          </label>
+
+          <button type="submit" class="send-button" aria-label="投递匿名留言">
+            <span>投递</span>
+          </button>
+          <p class="form-note" id="formNote" aria-live="polite"></p>
+        </form>
+      </section>
+      <section class="home-public" aria-labelledby="homePublicTitle">
+        <div class="home-public-heading">
+          <h2 id="homePublicTitle">公开的信</h2>
+          <a class="soft-link" href="/public">全部</a>
+        </div>
+        <div class="message-list" id="homePublicMessages" aria-live="polite"><!-- PUBLIC_MESSAGES_HOME --></div>
+      </section>
+      <footer class="site-footer">ToT · To Tyycc</footer>
+    </main>
+
+    <div class="letter-float hidden" id="deliveryCard" aria-live="polite">
+      <div class="letter-float-card">
+        <div class="letter-mark" aria-hidden="true">💌</div>
+        <p>ToT 已经收到啦。</p>
+      </div>
+    </div>
+
+    <div class="reply-return-card hidden" id="replyNotice" aria-live="polite">
+      <div class="letter-mark" aria-hidden="true">💌</div>
+      <p>ToT 欢迎回来。</p>
+      <strong>你有一封新的回信。</strong>
+      <button type="button" class="reply-read-button" id="readReplyButton">查收</button>
+    </div>
+
+    <script src="/initial-public.js?v=heart-webview-1"></script>
+    <script src="script.js?v=heart-webview-1"></script>
+  </body>
+</html>

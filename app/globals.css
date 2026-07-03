@@ -1,0 +1,39 @@
+@import "../styles.css";
+
+html {
+  scroll-behavior: smooth;
+}
+
+button {
+  appearance: none;
+}
+
+.admin-password-row {
+  display: grid;
+  gap: 8px;
+}
+
+.hero {
+  width: 100%;
+  max-width: 440px;
+}
+
+.home-public {
+  width: 100%;
+  max-width: 520px;
+}
+
+.panel-page {
+  width: 100%;
+  max-width: 760px;
+}
+
+.reply-page {
+  width: 100%;
+  max-width: 680px;
+}
+
+.letter-float-card,
+.reply-return-card {
+  width: min(82vw, 250px);
+}

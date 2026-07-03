@@ -1,0 +1,21 @@
+{
+  "name": "tot-anonymous-letter-box",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.110.0",
+    "next": "^16.2.10",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
+  },
+  "devDependencies": {
+    "eslint": "^10.6.0",
+    "eslint-config-next": "^16.2.10"
+  }
+}

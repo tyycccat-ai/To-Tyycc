@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#fff7f8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="T o T 管理" />
+    <title>T o T 管理</title>
+    <meta name="description" content="T o T 匿名信箱管理员后台。" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="page-shell admin-shell" aria-labelledby="adminTitle">
+      <section class="panel-page">
+        <header class="panel-header">
+          <a class="soft-link panel-back" href="/">返回信箱</a>
+          <h1 id="adminTitle">Tyycc 的信箱</h1>
+          <p>这里会收好每一封匿名信。</p>
+        </header>
+
+        <form class="admin-login" id="adminLogin">
+          <label>
+            <span>管理员密码</span>
+            <input
+              type="password"
+              name="password"
+              autocomplete="current-password"
+              required
+            />
+          </label>
+          <button type="submit" class="send-button">进入</button>
+          <p class="form-note" id="adminNote" aria-live="polite"></p>
+        </form>
+
+        <section class="admin-board hidden" id="adminBoard" aria-label="留言管理">
+          <div class="board-toolbar">
+            <p id="messageCount">0 封信</p>
+            <button type="button" class="text-button" id="logoutButton">退出</button>
+          </div>
+          <div class="message-list" id="adminMessages"></div>
+        </section>
+      </section>
+      <footer class="site-footer">ToT · To Tyycc</footer>
+    </main>
+
+    <script src="admin.js?v=reply-state-1"></script>
+  </body>
+</html>
