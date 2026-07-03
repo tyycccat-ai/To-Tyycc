@@ -7,6 +7,8 @@ import {
   updateMessage
 } from "../../../../../lib/messages";
 
+export const runtime = "nodejs";
+
 export async function PATCH(request, { params }) {
   try {
     if (!isAdminRequest(request)) {

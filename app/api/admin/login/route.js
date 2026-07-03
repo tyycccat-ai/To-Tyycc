@@ -2,6 +2,8 @@ import crypto from "node:crypto";
 import { NextResponse } from "next/server";
 import { SESSION_COOKIE, adminCookieOptions, adminPassword, makeSession } from "../../../../lib/auth";
 
+export const runtime = "nodejs";
+
 export async function POST(request) {
   try {
     const data = await request.json();

@@ -62,6 +62,11 @@ pnpm dev
 
 如果之后修改环境变量，需要在 Vercel 里重新部署一次。
 
+## EdgeOne Pages 国内镜像
+
+如果需要给国内朋友使用，可以把同一个 GitHub 仓库导入腾讯 EdgeOne Pages。  
+EdgeOne 镜像站和 Vercel 原站共用同一个 Supabase 项目，详细步骤见 `EDGEONE_DEPLOYMENT.md`。
+
 ## 上线后测试
 
 - 首页空内容不能投递。

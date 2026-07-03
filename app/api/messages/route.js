@@ -7,6 +7,8 @@ import {
 } from "../../../lib/messages";
 import { clientIp, rateLimited } from "../../../lib/rateLimit";
 
+export const runtime = "nodejs";
+
 export async function POST(request) {
   try {
     const data = await request.json();

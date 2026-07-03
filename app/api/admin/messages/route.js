@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { isAdminRequest } from "../../../../lib/auth";
 import { listAdminMessages } from "../../../../lib/messages";
 
+export const runtime = "nodejs";
+
 export async function GET(request) {
   try {
     if (!isAdminRequest(request)) {

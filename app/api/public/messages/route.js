@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { listPublicMessages } from "../../../../lib/messages";
 
+export const runtime = "nodejs";
+
 export async function GET() {
   try {
     const messages = await listPublicMessages();

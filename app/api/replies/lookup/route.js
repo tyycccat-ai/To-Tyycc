@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { lookupReplyLetters } from "../../../../lib/messages";
 
+export const runtime = "nodejs";
+
 export async function POST(request) {
   try {
     const data = await request.json();

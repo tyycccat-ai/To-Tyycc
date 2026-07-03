@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { likePublicMessage } from "../../../../../../lib/messages";
 
+export const runtime = "nodejs";
+
 export async function POST(_request, { params }) {
   try {
     const { id } = await params;
