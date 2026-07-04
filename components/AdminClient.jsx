@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { formatTime } from "./MessageCard";
 
 async function requestJson(url, options = {}) {
@@ -52,6 +52,82 @@ function ReplyEditor({ message, onConfirm, busy }) {
         </button>
       </div>
     </>
+  );
+}
+
+function SupplementReplies({ message, onAdd, busy }) {
+  const [open, setOpen] = useState(false);
+  const [draft, setDraft] = useState("");
+  const inputRef = useRef(null);
+  const supplements = message.replySupplements || [];
+
+  useEffect(() => {
+    setDraft("");
+    setOpen(false);
+  }, [message.id]);
+
+  function submitSupplement() {
+    if (!draft.trim()) {
+      inputRef.current?.focus();
+      return;
+    }
+    onAdd(message.id, draft, () => setDraft(""));
+  }
+
+  if (!message.reply?.trim()) return null;
+
+  return (
+    <section className="supplement-section" aria-label="补充回信">
+      {supplements.length ? (
+        <div className="supplement-list">
+          {supplements.map((supplement) => (
+            <article className="supplement-item" key={supplement.id}>
+              <div className="supplement-meta">
+                <span>补充回信</span>
+                <time>{formatTime(supplement.createdAt, {
+                  dateStyle: "medium",
+                  timeStyle: "short"
+                })}</time>
+              </div>
+              <p>{supplement.content}</p>
+            </article>
+          ))}
+        </div>
+      ) : null}
+
+      <button
+        type="button"
+        className="text-button supplement-toggle"
+        disabled={busy}
+        onClick={() => {
+          setOpen((value) => !value);
+          setTimeout(() => inputRef.current?.focus(), 0);
+        }}
+      >
+        💌 补充回信
+      </button>
+
+      {open ? (
+        <div className="supplement-editor">
+          <textarea
+            ref={inputRef}
+            value={draft}
+            maxLength={3000}
+            rows={3}
+            placeholder="继续写一封补充回信"
+            onChange={(event) => setDraft(event.target.value)}
+          />
+          <button
+            type="button"
+            className={`text-button reply-confirm-button${busy ? " is-busy" : ""}`}
+            disabled={busy}
+            onClick={submitSupplement}
+          >
+            {busy ? "补充中" : "确认补充"}
+          </button>
+        </div>
+      ) : null}
+    </section>
   );
 }
 
@@ -150,6 +226,46 @@ export default function AdminClient() {
     }
   }
 
+  async function addSupplement(id, supplementReply, onSuccess) {
+    const key = actionKey(id, "supplement");
+    setBusyAction(key);
+    setNote("");
+
+    let response;
+    try {
+      response = await requestJson(`/api/admin/messages/${encodeURIComponent(id)}`, {
+        method: "PATCH",
+        body: { supplementReply }
+      });
+    } catch {
+      setBusyAction("");
+      setNote("这封补充回信暂时送不出去");
+      await loadMessages();
+      return;
+    }
+    setBusyAction("");
+    if (!response.ok || !response.data.supplement) {
+      setNote("这封补充回信暂时送不出去");
+      await loadMessages();
+      return;
+    }
+
+    setMessages((current) =>
+      current.map((message) =>
+        String(message.id) === String(id)
+          ? {
+              ...message,
+              replySupplements: [
+                ...(message.replySupplements || []),
+                response.data.supplement
+              ]
+            }
+          : message
+      )
+    );
+    onSuccess?.();
+  }
+
   async function removeMessage(id) {
     const key = actionKey(id, "delete");
     setBusyAction(key);
@@ -216,6 +332,7 @@ export default function AdminClient() {
                   const publishing = busyAction === actionKey(message.id, "publish");
                   const unpublishing = busyAction === actionKey(message.id, "unpublish");
                   const replying = busyAction === actionKey(message.id, "reply");
+                  const supplementing = busyAction === actionKey(message.id, "supplement");
                   const messageBusy = busyAction.startsWith(`${message.id}:`);
                   return (
                     <article className="message-card" key={message.id}>
@@ -234,10 +351,15 @@ export default function AdminClient() {
                       </div>
                       <ReplyEditor
                         message={message}
-                        busy={replying}
+                        busy={messageBusy || replying}
                         onConfirm={(id, reply) =>
                           updateMessage(id, { reply }, "这封回信暂时确认不了", "reply")
                         }
+                      />
+                      <SupplementReplies
+                        message={message}
+                        busy={messageBusy || supplementing}
+                        onAdd={addSupplement}
                       />
                       <div className="message-actions">
                         <button

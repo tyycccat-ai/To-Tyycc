@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { isAdminRequest } from "../../../../../lib/auth";
 import {
   MAX_REPLY_LENGTH,
+  createReplySupplement,
   deleteMessage,
   getMessageForAdmin,
   updateMessage
@@ -23,6 +24,30 @@ export async function PATCH(request, { params }) {
 
     const data = await request.json();
     const updates = {};
+
+    if ("supplementReply" in data) {
+      const supplementReply = String(data.supplementReply || "").trim();
+      if (!message.reply?.trim()) {
+        return NextResponse.json(
+          { ok: false, error: "reply_required" },
+          { status: 400 }
+        );
+      }
+      if (!supplementReply) {
+        return NextResponse.json(
+          { ok: false, error: "supplement_required" },
+          { status: 400 }
+        );
+      }
+      if (supplementReply.length > MAX_REPLY_LENGTH) {
+        return NextResponse.json(
+          { ok: false, error: "supplement_too_long" },
+          { status: 400 }
+        );
+      }
+      const supplement = await createReplySupplement(id, supplementReply);
+      return NextResponse.json({ ok: true, supplement });
+    }
 
     if ("isPublic" in data) {
       const isPublic = Boolean(data.isPublic);

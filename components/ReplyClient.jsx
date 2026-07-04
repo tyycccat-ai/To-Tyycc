@@ -70,11 +70,6 @@ export default function ReplyClient() {
 
     async function loadLetter() {
       const storedLetter = readActiveLetter();
-      if (storedLetter?.reply) {
-        setLetter(storedLetter);
-        setLoading(false);
-        return;
-      }
 
       const params = new URLSearchParams(window.location.search);
       const id = params.get("id");
@@ -143,6 +138,14 @@ export default function ReplyClient() {
                 <h2>From Tyycc</h2>
                 <p>{letter.reply}</p>
               </section>
+
+              {(letter.replySupplements || []).map((supplement) => (
+                <section className="letter-section" key={supplement.id}>
+                  <h2>补充回信</h2>
+                  <p>{supplement.content}</p>
+                  <time>{formatLetterDate(supplement.createdAt)}</time>
+                </section>
+              ))}
 
               <time className="letter-date">
                 {formatLetterDate(letter.replyUpdatedAt || letter.createdAt)}

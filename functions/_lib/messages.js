@@ -53,6 +53,14 @@ export function toPublicMessage(message) {
   };
 }
 
+export function toReplySupplement(supplement) {
+  return {
+    id: supplement.id,
+    content: supplement.content || "",
+    createdAt: supplement.created_at || ""
+  };
+}
+
 export function toAdminMessage(message) {
   return {
     id: message.id,
@@ -62,6 +70,7 @@ export function toAdminMessage(message) {
     isPublic: Boolean(message.is_public),
     createdAt: message.created_at || "",
     reply: message.reply || "",
+    replySupplements: (message.replySupplements || []).map(toReplySupplement),
     likes: Number(message.likes || 0),
     displayName: displayName(message)
   };
@@ -73,8 +82,36 @@ export function toReplyLetter(message) {
     content: message.content || "",
     createdAt: message.created_at || "",
     reply: message.reply || "",
-    replyUpdatedAt: message.reply_updated_at || ""
+    replyUpdatedAt: message.reply_updated_at || "",
+    replySupplements: (message.replySupplements || []).map(toReplySupplement)
   };
+}
+
+async function listSupplementsForMessages(env, messageIds) {
+  if (!messageIds.length) return new Map();
+  const rows = await supabaseRequest(env, "GET", "reply_supplements", {
+    query: {
+      select: "id,message_id,content,created_at",
+      message_id: `in.(${messageIds.join(",")})`,
+      order: "created_at.asc"
+    }
+  });
+
+  const grouped = new Map();
+  for (const supplement of rows || []) {
+    const key = String(supplement.message_id);
+    if (!grouped.has(key)) grouped.set(key, []);
+    grouped.get(key).push(supplement);
+  }
+  return grouped;
+}
+
+async function attachSupplements(env, messages) {
+  const grouped = await listSupplementsForMessages(env, (messages || []).map((message) => message.id));
+  return (messages || []).map((message) => ({
+    ...message,
+    replySupplements: grouped.get(String(message.id)) || []
+  }));
 }
 
 export async function createMessage(env, { content, nickname, allowPublic }) {
@@ -109,13 +146,13 @@ export async function listAdminMessages(env) {
       order: "created_at.desc"
     }
   });
-  return (rows || []).map(toAdminMessage);
+  return (await attachSupplements(env, rows || [])).map(toAdminMessage);
 }
 
 export async function getMessageForAdmin(env, id) {
   const rows = await supabaseRequest(env, "GET", "messages", {
     query: {
-      select: "id,allow_public,is_public,likes,receipt_token",
+        select: "id,allow_public,is_public,likes,receipt_token,reply",
       id: `eq.${id}`,
       limit: "1"
     }
@@ -134,6 +171,19 @@ export async function deleteMessage(env, id) {
   await supabaseRequest(env, "DELETE", "messages", {
     query: { id: `eq.${id}` }
   });
+}
+
+export async function createReplySupplement(env, messageId, content) {
+  const createdAt = new Date().toISOString();
+  const rows = await supabaseRequest(env, "POST", "reply_supplements", {
+    body: {
+      message_id: messageId,
+      content,
+      created_at: createdAt
+    }
+  });
+  await updateMessage(env, messageId, { reply_updated_at: createdAt });
+  return toReplySupplement(rows?.[0] || {});
 }
 
 export async function likePublicMessage(env, id) {
@@ -165,7 +215,10 @@ export async function lookupReplyLetters(env, receipts) {
       }
     });
     const message = rows?.[0];
-    if (message?.reply?.trim()) letters.push(toReplyLetter(message));
+    if (message?.reply?.trim()) {
+      const [messageWithSupplements] = await attachSupplements(env, [message]);
+      letters.push(toReplyLetter(messageWithSupplements));
+    }
   }
 
   return letters;

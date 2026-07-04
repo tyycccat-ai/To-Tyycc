@@ -2,6 +2,7 @@ import { isAdminRequest } from "../../../_lib/auth";
 import { json, readJson } from "../../../_lib/http";
 import {
   MAX_REPLY_LENGTH,
+  createReplySupplement,
   deleteMessage,
   getMessageForAdmin,
   updateMessage
@@ -18,6 +19,21 @@ export async function onRequestPatch({ request, env, params }) {
 
     const data = await readJson(request);
     const updates = {};
+
+    if ("supplementReply" in data) {
+      const supplementReply = String(data.supplementReply || "").trim();
+      if (!message.reply?.trim()) {
+        return json({ ok: false, error: "reply_required" }, 400);
+      }
+      if (!supplementReply) {
+        return json({ ok: false, error: "supplement_required" }, 400);
+      }
+      if (supplementReply.length > MAX_REPLY_LENGTH) {
+        return json({ ok: false, error: "supplement_too_long" }, 400);
+      }
+      const supplement = await createReplySupplement(env, params.id, supplementReply);
+      return json({ ok: true, supplement });
+    }
 
     if ("isPublic" in data) {
       const isPublic = Boolean(data.isPublic);
