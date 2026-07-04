@@ -685,8 +685,8 @@ textarea:focus {
 
 .message-card {
   display: grid;
-  gap: 12px;
-  padding: 17px 18px;
+  gap: 14px;
+  padding: 18px;
   border: 1px solid rgba(255, 255, 255, 0.74);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.82);
@@ -712,8 +712,12 @@ textarea:focus {
 }
 
 .message-actions {
-  justify-content: flex-end;
+  justify-content: flex-start;
   flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 2px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(157, 93, 110, 0.1);
 }
 
 .message-meta span {
@@ -1000,7 +1004,7 @@ textarea:focus {
 }
 
 .danger-button {
-  color: #b46b78;
+  color: rgba(157, 93, 110, 0.78);
 }
 
 .reply-confirm-button {
@@ -1026,11 +1030,41 @@ textarea:focus {
 }
 
 .publish-button {
-  color: #7f6c93;
+  color: rgba(113, 91, 99, 0.72);
 }
 
 .unpublish-button {
-  color: #8f7d83;
+  color: rgba(143, 125, 131, 0.78);
+}
+
+.message-actions .text-button {
+  min-height: 30px;
+  padding: 0 11px;
+  border: 1px solid rgba(157, 93, 110, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.46);
+  box-shadow: none;
+  font-size: 12px;
+  font-weight: 650;
+  transition:
+    border-color 180ms ease,
+    background 180ms ease,
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.message-actions .text-button:hover:not(:disabled) {
+  border-color: rgba(217, 133, 150, 0.26);
+  background: rgba(255, 247, 248, 0.82);
+  transform: translateY(-1px);
+}
+
+.message-actions .danger-button:hover:not(:disabled) {
+  color: #a85f70;
+}
+
+.message-actions .publish-button:hover:not(:disabled) {
+  color: #895667;
 }
 
 .empty-state {
