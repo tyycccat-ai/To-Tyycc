@@ -139,7 +139,13 @@ export default function HomeClient({ initialMessages }) {
             String(letter.replyUpdatedAt || letter.id)
         );
       });
-      if (newLetter) setReplyNotice(newLetter);
+      if (newLetter) {
+        const receipt = receipts.find((item) => String(item.id) === String(newLetter.id));
+        setReplyNotice({
+          ...newLetter,
+          receiptToken: receipt?.receiptToken || ""
+        });
+      }
     } catch {
       // No hint is shown when the reply box cannot be checked.
     }
@@ -227,13 +233,22 @@ export default function HomeClient({ initialMessages }) {
 
   function readReply() {
     if (!replyNotice) return;
+    const replyLetter = {
+      ...replyNotice,
+      receiptToken: replyNotice.receiptToken || ""
+    };
     try {
-      window.sessionStorage.setItem(activeReplyKey, JSON.stringify(replyNotice));
+      window.sessionStorage.setItem(activeReplyKey, JSON.stringify(replyLetter));
+      window.localStorage.setItem(activeReplyKey, JSON.stringify(replyLetter));
     } catch {
-      // The reply page will show a quiet empty state if storage is blocked.
+      // The reply page can still look up the letter by URL token.
     }
-    markReplyAsRead(replyNotice);
-    window.location.href = "/reply";
+    markReplyAsRead(replyLetter);
+
+    const params = new URLSearchParams();
+    params.set("id", replyLetter.id);
+    if (replyLetter.receiptToken) params.set("token", replyLetter.receiptToken);
+    window.location.href = `/reply?${params.toString()}`;
   }
 
   return (

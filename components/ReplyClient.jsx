@@ -4,6 +4,21 @@ import { useEffect, useState } from "react";
 
 const activeReplyKey = "totActiveReplyLetter";
 
+async function requestJson(url, options = {}) {
+  const response = await fetch(url, {
+    method: options.method || "GET",
+    headers: options.body ? { "Content-Type": "application/json" } : undefined,
+    body: options.body ? JSON.stringify(options.body) : undefined
+  });
+  let data = {};
+  try {
+    data = await response.json();
+  } catch {
+    data = {};
+  }
+  return { ok: response.ok, data };
+}
+
 function formatLetterDate(timestamp) {
   const date =
     typeof timestamp === "number" ? new Date(timestamp * 1000) : new Date(timestamp);
@@ -14,19 +29,77 @@ function formatLetterDate(timestamp) {
   return `${year}.${month}.${day}`;
 }
 
-function readActiveLetter() {
+function readStoredLetter(storage) {
+  if (!storage) return null;
   try {
-    return JSON.parse(window.sessionStorage.getItem(activeReplyKey) || "null");
+    return JSON.parse(storage.getItem(activeReplyKey) || "null");
   } catch {
     return null;
   }
 }
 
+function readActiveLetter() {
+  return readStoredLetter(window.sessionStorage) || readStoredLetter(window.localStorage);
+}
+
+function writeActiveLetter(letter) {
+  try {
+    window.sessionStorage.setItem(activeReplyKey, JSON.stringify(letter));
+    window.localStorage.setItem(activeReplyKey, JSON.stringify(letter));
+  } catch {
+    // The letter can still be rendered for the current visit.
+  }
+}
+
 export default function ReplyClient() {
   const [letter, setLetter] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setLetter(readActiveLetter());
+    let cancelled = false;
+
+    async function loadLetter() {
+      const storedLetter = readActiveLetter();
+      if (storedLetter?.reply) {
+        setLetter(storedLetter);
+        setLoading(false);
+        return;
+      }
+
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get("id");
+      const receiptToken = params.get("token");
+      if (!id || !receiptToken) {
+        setLetter(storedLetter);
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const response = await requestJson("/api/replies/lookup", {
+          method: "POST",
+          body: { receipts: [{ id, receiptToken }] }
+        });
+        if (cancelled) return;
+        const foundLetter = response.ok ? response.data.letters?.[0] : null;
+        if (foundLetter?.reply) {
+          const nextLetter = { ...foundLetter, receiptToken };
+          writeActiveLetter(nextLetter);
+          setLetter(nextLetter);
+        } else {
+          setLetter(storedLetter);
+        }
+      } catch {
+        if (!cancelled) setLetter(storedLetter);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+
+    loadLetter();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return (
@@ -56,6 +129,8 @@ export default function ReplyClient() {
                 {formatLetterDate(letter.replyUpdatedAt || letter.createdAt)}
               </time>
             </>
+          ) : loading ? (
+            <p className="letter-empty">正在找这封回信……</p>
           ) : (
             <p className="letter-empty">这封回信暂时没有找到。</p>
           )}
