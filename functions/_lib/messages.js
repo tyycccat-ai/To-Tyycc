@@ -49,6 +49,7 @@ export function toPublicMessage(message) {
     displayName: displayName(message),
     createdAt: message.created_at || "",
     reply: message.reply || "",
+    replySupplements: (message.replySupplements || []).map(toReplySupplement),
     likes: Number(message.likes || 0)
   };
 }
@@ -172,7 +173,7 @@ export async function listPublicMessages(env) {
       order: "created_at.desc"
     }
   });
-  return (rows || []).map(toPublicMessage);
+  return (await attachSupplements(env, rows || [])).map(toPublicMessage);
 }
 
 export async function listAdminMessages(env) {

@@ -894,6 +894,10 @@ textarea:focus {
   font-size: 13px;
 }
 
+.supplement-public-block {
+  background: rgba(255, 247, 248, 0.54);
+}
+
 .like-button {
   display: inline-flex;
   min-height: 30px;

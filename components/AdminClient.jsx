@@ -104,7 +104,7 @@ function SupplementReplies({ message, onAdd, busy, note }) {
           setTimeout(() => inputRef.current?.focus(), 0);
         }}
       >
-        💌 补充回信
+        补充
       </button>
 
       {open ? (

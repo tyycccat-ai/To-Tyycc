@@ -46,6 +46,7 @@ function searchText(message) {
     message.displayName,
     message.content,
     message.reply,
+    ...(message.replySupplements || []).map((supplement) => supplement.content),
     formatTime(message.createdAt),
     formatIsoDate(message.createdAt)
   ]

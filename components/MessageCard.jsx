@@ -31,6 +31,12 @@ export function PublicMessageCard({ message, liked, onLike }) {
           <p>{message.reply}</p>
         </div>
       ) : null}
+      {(message.replySupplements || []).map((supplement) => (
+        <div className="reply-block supplement-public-block" key={supplement.id}>
+          <span>补充回信</span>
+          <p>{supplement.content}</p>
+        </div>
+      ))}
       <div className="public-actions">
         <button
           type="button"
