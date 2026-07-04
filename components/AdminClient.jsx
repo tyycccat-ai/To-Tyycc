@@ -97,7 +97,7 @@ function SupplementReplies({ message, onAdd, busy, note }) {
 
       <button
         type="button"
-        className="text-button supplement-toggle"
+        className="text-button reply-confirm-button supplement-toggle"
         disabled={busy}
         onClick={() => {
           setOpen((value) => !value);

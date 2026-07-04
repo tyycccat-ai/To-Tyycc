@@ -829,11 +829,6 @@ textarea:focus {
 
 .supplement-toggle {
   justify-self: start;
-  min-height: 30px;
-  padding: 0 12px;
-  border: 1px solid rgba(217, 133, 150, 0.22);
-  border-radius: 999px;
-  background: #fff1f4;
 }
 
 .supplement-editor {
