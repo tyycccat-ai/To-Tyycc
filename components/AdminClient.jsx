@@ -55,7 +55,7 @@ function ReplyEditor({ message, onConfirm, busy }) {
   );
 }
 
-function SupplementReplies({ message, onAdd, busy }) {
+function SupplementReplies({ message, onAdd, busy, note }) {
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState("");
   const inputRef = useRef(null);
@@ -125,6 +125,9 @@ function SupplementReplies({ message, onAdd, busy }) {
           >
             {busy ? "补充中" : "确认补充"}
           </button>
+          <p className={`form-note supplement-note ${note ? "show" : ""}`} aria-live="polite">
+            {note}
+          </p>
         </div>
       ) : null}
     </section>
@@ -140,6 +143,7 @@ export default function AdminClient() {
   const [messages, setMessages] = useState([]);
   const [authorized, setAuthorized] = useState(false);
   const [note, setNote] = useState("");
+  const [supplementNotes, setSupplementNotes] = useState({});
   const [busyAction, setBusyAction] = useState("");
   const [loginBusy, setLoginBusy] = useState(false);
 
@@ -230,6 +234,7 @@ export default function AdminClient() {
     const key = actionKey(id, "supplement");
     setBusyAction(key);
     setNote("");
+    setSupplementNotes((current) => ({ ...current, [id]: "" }));
 
     let response;
     try {
@@ -239,13 +244,19 @@ export default function AdminClient() {
       });
     } catch {
       setBusyAction("");
-      setNote("这封补充回信暂时送不出去");
+      setSupplementNotes((current) => ({
+        ...current,
+        [id]: "这封补充回信暂时送不出去"
+      }));
       await loadMessages();
       return;
     }
     setBusyAction("");
     if (!response.ok || !response.data.supplement) {
-      setNote("这封补充回信暂时送不出去");
+      setSupplementNotes((current) => ({
+        ...current,
+        [id]: "这封补充回信暂时送不出去"
+      }));
       await loadMessages();
       return;
     }
@@ -263,6 +274,7 @@ export default function AdminClient() {
           : message
       )
     );
+    setSupplementNotes((current) => ({ ...current, [id]: "" }));
     onSuccess?.();
   }
 
@@ -359,6 +371,7 @@ export default function AdminClient() {
                       <SupplementReplies
                         message={message}
                         busy={messageBusy || supplementing}
+                        note={supplementNotes[message.id] || ""}
                         onAdd={addSupplement}
                       />
                       <div className="message-actions">

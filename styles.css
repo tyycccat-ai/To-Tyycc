@@ -869,6 +869,11 @@ textarea:focus {
   justify-self: end;
 }
 
+.supplement-note {
+  justify-self: end;
+  min-height: 18px;
+}
+
 .reply-block {
   display: grid;
   gap: 7px;

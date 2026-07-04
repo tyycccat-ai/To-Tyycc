@@ -79,7 +79,10 @@ export async function PATCH(request, { params }) {
     await updateMessage(id, updates);
     return NextResponse.json({ ok: true });
   } catch (error) {
-    return NextResponse.json({ ok: false, error: "update_failed" }, { status: 500 });
+    return NextResponse.json(
+      { ok: false, error: "update_failed", detail: error?.message || "" },
+      { status: 500 }
+    );
   }
 }
 

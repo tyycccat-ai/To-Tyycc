@@ -57,7 +57,7 @@ export function toReplySupplement(supplement) {
   return {
     id: supplement.id,
     content: supplement.content || "",
-    createdAt: supplement.created_at || ""
+    createdAt: supplement.created_at || supplement.createdAt || ""
   };
 }
 
@@ -112,11 +112,41 @@ async function listSupplementsForMessages(env, messageIds) {
   return grouped;
 }
 
+async function listJsonSupplementsForMessages(env, messageIds) {
+  if (!messageIds.length) return new Map();
+  let rows = [];
+  try {
+    rows = await supabaseRequest(env, "GET", "messages", {
+      query: {
+        select: "id,reply_supplements",
+        id: `in.(${messageIds.join(",")})`
+      }
+    });
+  } catch (error) {
+    if (/reply_supplements/i.test(error?.message || "")) return new Map();
+    throw error;
+  }
+
+  const grouped = new Map();
+  for (const message of rows || []) {
+    const supplements = Array.isArray(message.reply_supplements)
+      ? message.reply_supplements
+      : [];
+    grouped.set(String(message.id), supplements.map(toReplySupplement));
+  }
+  return grouped;
+}
+
 async function attachSupplements(env, messages) {
-  const grouped = await listSupplementsForMessages(env, (messages || []).map((message) => message.id));
+  const ids = (messages || []).map((message) => message.id);
+  const grouped = await listSupplementsForMessages(env, ids);
+  const jsonGrouped = await listJsonSupplementsForMessages(env, ids);
   return (messages || []).map((message) => ({
     ...message,
-    replySupplements: grouped.get(String(message.id)) || []
+    replySupplements: [
+      ...(jsonGrouped.get(String(message.id)) || []),
+      ...(grouped.get(String(message.id)) || [])
+    ].sort((first, second) => String(first.createdAt).localeCompare(String(second.createdAt)))
   }));
 }
 
@@ -181,13 +211,38 @@ export async function deleteMessage(env, id) {
 
 export async function createReplySupplement(env, messageId, content) {
   const createdAt = new Date().toISOString();
-  const rows = await supabaseRequest(env, "POST", "reply_supplements", {
-    body: {
-      message_id: messageId,
-      content,
-      created_at: createdAt
-    }
-  });
+  const supplementDraft = {
+    id: crypto.randomUUID(),
+    content,
+    createdAt
+  };
+  let rows = [];
+  try {
+    rows = await supabaseRequest(env, "POST", "reply_supplements", {
+      body: {
+        message_id: messageId,
+        content,
+        created_at: createdAt
+      }
+    });
+  } catch (error) {
+    if (!/reply_supplements/i.test(error?.message || "")) throw error;
+    const messages = await supabaseRequest(env, "GET", "messages", {
+      query: {
+        select: "reply_supplements",
+        id: `eq.${messageId}`,
+        limit: "1"
+      }
+    });
+    const currentSupplements = Array.isArray(messages?.[0]?.reply_supplements)
+      ? messages[0].reply_supplements
+      : [];
+    await updateMessage(env, messageId, {
+      reply_supplements: [...currentSupplements, supplementDraft],
+      reply_updated_at: createdAt
+    });
+    return supplementDraft;
+  }
   await updateMessage(env, messageId, { reply_updated_at: createdAt });
   return toReplySupplement(rows?.[0] || {});
 }

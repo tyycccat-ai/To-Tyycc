@@ -14,7 +14,8 @@ create table if not exists public.messages (
   reply text,
   reply_updated_at timestamptz,
   likes integer not null default 0,
-  receipt_token text
+  receipt_token text,
+  reply_supplements jsonb not null default '[]'::jsonb
 );
 
 create table if not exists public.reply_supplements (
@@ -28,6 +29,7 @@ alter table public.messages add column if not exists reply text;
 alter table public.messages add column if not exists likes integer not null default 0;
 alter table public.messages add column if not exists receipt_token text;
 alter table public.messages add column if not exists reply_updated_at timestamptz;
+alter table public.messages add column if not exists reply_supplements jsonb not null default '[]'::jsonb;
 
 alter table public.messages enable row level security;
 alter table public.reply_supplements enable row level security;
