@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 
+const letterReceiptKey = "totLetterReceipts";
 const activeReplyKey = "totActiveReplyLetter";
 
 async function requestJson(url, options = {}) {
@@ -42,6 +43,15 @@ function readActiveLetter() {
   return readStoredLetter(window.sessionStorage) || readStoredLetter(window.localStorage);
 }
 
+function readLetterReceipts() {
+  try {
+    const receipts = JSON.parse(window.localStorage.getItem(letterReceiptKey) || "[]");
+    return Array.isArray(receipts) ? receipts : [];
+  } catch {
+    return [];
+  }
+}
+
 function writeActiveLetter(letter) {
   try {
     window.sessionStorage.setItem(activeReplyKey, JSON.stringify(letter));
@@ -69,7 +79,10 @@ export default function ReplyClient() {
       const params = new URLSearchParams(window.location.search);
       const id = params.get("id");
       const receiptToken = params.get("token");
-      if (!id || !receiptToken) {
+      const receipts =
+        id && receiptToken ? [{ id, receiptToken }] : readLetterReceipts();
+
+      if (!receipts.length) {
         setLetter(storedLetter);
         setLoading(false);
         return;
@@ -78,12 +91,18 @@ export default function ReplyClient() {
       try {
         const response = await requestJson("/api/replies/lookup", {
           method: "POST",
-          body: { receipts: [{ id, receiptToken }] }
+          body: { receipts }
         });
         if (cancelled) return;
         const foundLetter = response.ok ? response.data.letters?.[0] : null;
         if (foundLetter?.reply) {
+          const matchedReceipt = receipts.find(
+            (receipt) => String(receipt.id) === String(foundLetter.id)
+          );
           const nextLetter = { ...foundLetter, receiptToken };
+          if (matchedReceipt?.receiptToken) {
+            nextLetter.receiptToken = matchedReceipt.receiptToken;
+          }
           writeActiveLetter(nextLetter);
           setLetter(nextLetter);
         } else {
