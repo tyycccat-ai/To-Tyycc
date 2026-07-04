@@ -202,9 +202,7 @@ textarea::placeholder {
 }
 
 textarea:focus {
-  background:
-    linear-gradient(180deg, transparent calc(100% - 1px), rgba(217, 133, 150, 0.2) 0)
-      0 12px / 100% 40px;
+  background: transparent;
 }
 
 .form-row {
