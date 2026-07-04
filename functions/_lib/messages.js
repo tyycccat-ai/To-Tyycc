@@ -89,13 +89,19 @@ export function toReplyLetter(message) {
 
 async function listSupplementsForMessages(env, messageIds) {
   if (!messageIds.length) return new Map();
-  const rows = await supabaseRequest(env, "GET", "reply_supplements", {
-    query: {
-      select: "id,message_id,content,created_at",
-      message_id: `in.(${messageIds.join(",")})`,
-      order: "created_at.asc"
-    }
-  });
+  let rows = [];
+  try {
+    rows = await supabaseRequest(env, "GET", "reply_supplements", {
+      query: {
+        select: "id,message_id,content,created_at",
+        message_id: `in.(${messageIds.join(",")})`,
+        order: "created_at.asc"
+      }
+    });
+  } catch (error) {
+    if (/reply_supplements/i.test(error?.message || "")) return new Map();
+    throw error;
+  }
 
   const grouped = new Map();
   for (const supplement of rows || []) {
