@@ -120,8 +120,7 @@ textarea {
   letter-spacing: 0;
 }
 
-.letter-box::before,
-.letter-box::after {
+.letter-box::before {
   position: absolute;
   inset-inline: 28px;
   height: 1px;
@@ -131,10 +130,6 @@ textarea {
 
 .letter-box::before {
   top: 44px;
-}
-
-.letter-box::after {
-  bottom: 90px;
 }
 
 .mascot-wrap {
@@ -1027,10 +1022,6 @@ textarea:focus {
 
   .letter-box::before {
     top: 50px;
-  }
-
-  .letter-box::after {
-    bottom: 108px;
   }
 
   textarea {
