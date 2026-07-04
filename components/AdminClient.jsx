@@ -22,8 +22,17 @@ function ReplyEditor({ message, onConfirm, busy }) {
   const [reply, setReply] = useState(message.reply || "");
   const original = message.reply || "";
   const changed = reply.trim() !== original.trim();
-  const hasReply = Boolean(original.trim()) && !changed;
-  const canConfirm = !busy && !hasReply;
+  const hasReply = Boolean(original.trim());
+  const canConfirm = !busy && changed && Boolean(reply.trim());
+  const buttonText = busy
+    ? "确认中"
+    : changed
+      ? hasReply
+        ? "确认修改"
+        : "确认回信"
+      : hasReply
+        ? "已回信"
+        : "确认回信";
 
   useEffect(() => {
     setReply(message.reply || "");
@@ -44,11 +53,11 @@ function ReplyEditor({ message, onConfirm, busy }) {
       <div className="reply-actions">
         <button
           type="button"
-          className={`text-button reply-confirm-button${hasReply ? " is-confirmed" : ""}${busy ? " is-busy" : ""}`}
+          className={`text-button reply-confirm-button${hasReply && !changed ? " is-confirmed" : ""}${busy ? " is-busy" : ""}`}
           disabled={!canConfirm}
           onClick={() => onConfirm(message.id, reply)}
         >
-          {busy ? "确认中" : hasReply ? "已回信" : "确认回信"}
+          {buttonText}
         </button>
       </div>
     </>
@@ -60,51 +69,57 @@ function SupplementReplies({ message, onAdd, busy, note }) {
   const [draft, setDraft] = useState("");
   const inputRef = useRef(null);
   const supplements = message.replySupplements || [];
+  const supplement = supplements[0] || null;
+  const original = supplement?.content || "";
+  const changed = draft.trim() !== original.trim();
+  const canSubmit = !busy && Boolean(draft.trim()) && (!supplement || changed);
 
   useEffect(() => {
-    setDraft("");
+    setDraft(supplement?.content || "");
     setOpen(false);
-  }, [message.id]);
+  }, [message.id, supplement?.id, supplement?.content]);
 
   function submitSupplement() {
     if (!draft.trim()) {
       inputRef.current?.focus();
       return;
     }
-    onAdd(message.id, draft, () => setDraft(""));
+    onAdd(message.id, draft, (savedSupplement) => {
+      setDraft(savedSupplement?.content || draft);
+      setOpen(false);
+    });
   }
 
   if (!message.reply?.trim()) return null;
 
   return (
     <section className="supplement-section" aria-label="补充回信">
-      {supplements.length ? (
+      {supplement ? (
         <div className="supplement-list">
-          {supplements.map((supplement) => (
-            <article className="supplement-item" key={supplement.id}>
-              <div className="supplement-meta">
-                <span>补充回信</span>
-                <time>{formatTime(supplement.createdAt, {
-                  dateStyle: "medium",
-                  timeStyle: "short"
-                })}</time>
-              </div>
-              <p>{supplement.content}</p>
-            </article>
-          ))}
+          <article className="supplement-item" key={supplement.id}>
+            <div className="supplement-meta">
+              <span>补充回信</span>
+              <time>{formatTime(supplement.createdAt, {
+                dateStyle: "medium",
+                timeStyle: "short"
+              })}</time>
+            </div>
+            <p>{supplement.content}</p>
+          </article>
         </div>
       ) : null}
 
       <button
         type="button"
-        className="text-button reply-confirm-button supplement-toggle"
+        className={`text-button reply-confirm-button supplement-toggle${supplement ? " is-confirmed" : ""}`}
         disabled={busy}
         onClick={() => {
           setOpen((value) => !value);
+          setDraft(supplement?.content || "");
           setTimeout(() => inputRef.current?.focus(), 0);
         }}
       >
-        补充
+        {supplement ? "已补充" : "补充"}
       </button>
 
       {open ? (
@@ -119,11 +134,11 @@ function SupplementReplies({ message, onAdd, busy, note }) {
           />
           <button
             type="button"
-            className={`text-button reply-confirm-button${busy ? " is-busy" : ""}`}
-            disabled={busy}
+            className={`text-button reply-confirm-button${supplement && !changed ? " is-confirmed" : ""}${busy ? " is-busy" : ""}`}
+            disabled={!canSubmit}
             onClick={submitSupplement}
           >
-            {busy ? "补充中" : "确认补充"}
+            {busy ? "补充中" : supplement ? (changed ? "确认修改" : "已补充") : "确认补充"}
           </button>
           <p className={`form-note supplement-note ${note ? "show" : ""}`} aria-live="polite">
             {note}
@@ -266,16 +281,13 @@ export default function AdminClient() {
         String(message.id) === String(id)
           ? {
               ...message,
-              replySupplements: [
-                ...(message.replySupplements || []),
-                response.data.supplement
-              ]
+              replySupplements: [response.data.supplement]
             }
           : message
       )
     );
     setSupplementNotes((current) => ({ ...current, [id]: "" }));
-    onSuccess?.();
+    onSuccess?.(response.data.supplement);
   }
 
   async function removeMessage(id) {

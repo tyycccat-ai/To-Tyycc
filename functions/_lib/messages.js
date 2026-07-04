@@ -147,7 +147,9 @@ async function attachSupplements(env, messages) {
     replySupplements: [
       ...(jsonGrouped.get(String(message.id)) || []),
       ...(grouped.get(String(message.id)) || [])
-    ].sort((first, second) => String(first.createdAt).localeCompare(String(second.createdAt)))
+    ]
+      .sort((first, second) => String(first.createdAt).localeCompare(String(second.createdAt)))
+      .slice(-1)
   }));
 }
 
@@ -212,20 +214,47 @@ export async function deleteMessage(env, id) {
 
 export async function createReplySupplement(env, messageId, content) {
   const createdAt = new Date().toISOString();
-  const supplementDraft = {
+  let supplementDraft = {
     id: crypto.randomUUID(),
     content,
     createdAt
   };
   let rows = [];
   try {
-    rows = await supabaseRequest(env, "POST", "reply_supplements", {
-      body: {
-        message_id: messageId,
-        content,
-        created_at: createdAt
+    const existingRows = await supabaseRequest(env, "GET", "reply_supplements", {
+      query: {
+        select: "id,content,created_at",
+        message_id: `eq.${messageId}`,
+        order: "created_at.asc"
       }
     });
+    if (existingRows?.length) {
+      const existing = existingRows[0];
+      supplementDraft = {
+        id: existing.id,
+        content,
+        createdAt: existing.created_at
+      };
+      await supabaseRequest(env, "PATCH", "reply_supplements", {
+        query: { id: `eq.${existing.id}` },
+        body: { content }
+      });
+      const extraIds = existingRows.slice(1).map((item) => item.id);
+      if (extraIds.length) {
+        await supabaseRequest(env, "DELETE", "reply_supplements", {
+          query: { id: `in.(${extraIds.join(",")})` }
+        });
+      }
+      rows = [{ id: existing.id, content, created_at: existing.created_at }];
+    } else {
+      rows = await supabaseRequest(env, "POST", "reply_supplements", {
+        body: {
+          message_id: messageId,
+          content,
+          created_at: createdAt
+        }
+      });
+    }
   } catch (error) {
     if (!/reply_supplements/i.test(error?.message || "")) throw error;
     const messages = await supabaseRequest(env, "GET", "messages", {
@@ -238,8 +267,16 @@ export async function createReplySupplement(env, messageId, content) {
     const currentSupplements = Array.isArray(messages?.[0]?.reply_supplements)
       ? messages[0].reply_supplements
       : [];
+    const currentSupplement = currentSupplements[0];
+    if (currentSupplement) {
+      supplementDraft = {
+        id: currentSupplement.id || supplementDraft.id,
+        content,
+        createdAt: currentSupplement.createdAt || currentSupplement.created_at || createdAt
+      };
+    }
     await updateMessage(env, messageId, {
-      reply_supplements: [...currentSupplements, supplementDraft],
+      reply_supplements: [supplementDraft],
       reply_updated_at: createdAt
     });
     return supplementDraft;
