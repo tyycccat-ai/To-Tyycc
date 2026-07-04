@@ -908,6 +908,11 @@ textarea:focus {
   cursor: not-allowed;
 }
 
+.text-button.is-busy {
+  cursor: wait;
+  opacity: 0.72;
+}
+
 .danger-button {
   color: #b46b78;
 }

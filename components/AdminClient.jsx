@@ -18,11 +18,16 @@ async function requestJson(url, options = {}) {
   return { ok: response.ok, status: response.status, data };
 }
 
-function ReplyEditor({ message, onConfirm }) {
+function ReplyEditor({ message, onConfirm, busy }) {
   const [reply, setReply] = useState(message.reply || "");
   const original = message.reply || "";
   const changed = reply.trim() !== original.trim();
   const hasReply = Boolean(original.trim()) && !changed;
+  const canConfirm = !busy && !hasReply;
+
+  useEffect(() => {
+    setReply(message.reply || "");
+  }, [message.id, message.reply]);
 
   return (
     <>
@@ -39,15 +44,19 @@ function ReplyEditor({ message, onConfirm }) {
       <div className="reply-actions">
         <button
           type="button"
-          className={`text-button reply-confirm-button${hasReply ? " is-confirmed" : ""}`}
-          disabled={hasReply}
+          className={`text-button reply-confirm-button${hasReply ? " is-confirmed" : ""}${busy ? " is-busy" : ""}`}
+          disabled={!canConfirm}
           onClick={() => onConfirm(message.id, reply)}
         >
-          {hasReply ? "已回信" : "确认回信"}
+          {busy ? "确认中" : hasReply ? "已回信" : "确认回信"}
         </button>
       </div>
     </>
   );
+}
+
+function actionKey(id, action) {
+  return `${id}:${action}`;
 }
 
 export default function AdminClient() {
@@ -55,7 +64,8 @@ export default function AdminClient() {
   const [messages, setMessages] = useState([]);
   const [authorized, setAuthorized] = useState(false);
   const [note, setNote] = useState("");
-  const [busyId, setBusyId] = useState("");
+  const [busyAction, setBusyAction] = useState("");
+  const [loginBusy, setLoginBusy] = useState(false);
 
   useEffect(() => {
     loadMessages();
@@ -79,10 +89,19 @@ export default function AdminClient() {
   async function login(event) {
     event.preventDefault();
     setNote("");
-    const response = await requestJson("/api/admin/login", {
-      method: "POST",
-      body: { password }
-    });
+    setLoginBusy(true);
+    let response;
+    try {
+      response = await requestJson("/api/admin/login", {
+        method: "POST",
+        body: { password }
+      });
+    } catch {
+      setLoginBusy(false);
+      setNote("信箱暂时打不开");
+      return;
+    }
+    setLoginBusy(false);
     if (!response.ok) {
       setNote("密码好像不对");
       return;
@@ -97,32 +116,62 @@ export default function AdminClient() {
     setMessages([]);
   }
 
-  async function updateMessage(id, body, failureText) {
-    setBusyId(String(id));
-    const response = await requestJson(`/api/admin/messages/${encodeURIComponent(id)}`, {
-      method: "PATCH",
-      body
-    });
-    setBusyId("");
+  async function updateMessage(id, body, failureText, action) {
+    const key = actionKey(id, action);
+    setBusyAction(key);
+    setNote("");
+    setMessages((current) =>
+      current.map((message) => {
+        if (String(message.id) !== String(id)) return message;
+        const nextMessage = { ...message };
+        if ("isPublic" in body) nextMessage.isPublic = Boolean(body.isPublic);
+        if ("reply" in body) nextMessage.reply = String(body.reply || "").trim();
+        return nextMessage;
+      })
+    );
+
+    let response;
+    try {
+      response = await requestJson(`/api/admin/messages/${encodeURIComponent(id)}`, {
+        method: "PATCH",
+        body
+      });
+    } catch {
+      setBusyAction("");
+      setNote(failureText);
+      await loadMessages();
+      return;
+    }
+    setBusyAction("");
     if (!response.ok) {
       setNote(failureText);
       await loadMessages();
       return;
     }
-    await loadMessages();
   }
 
   async function removeMessage(id) {
-    setBusyId(String(id));
-    const response = await requestJson(`/api/admin/messages/${encodeURIComponent(id)}`, {
-      method: "DELETE"
-    });
-    setBusyId("");
-    if (!response.ok) {
+    const key = actionKey(id, "delete");
+    setBusyAction(key);
+    setNote("");
+    setMessages((current) => current.filter((message) => String(message.id) !== String(id)));
+    let response;
+    try {
+      response = await requestJson(`/api/admin/messages/${encodeURIComponent(id)}`, {
+        method: "DELETE"
+      });
+    } catch {
+      setBusyAction("");
       setNote("这封信暂时删不掉");
+      await loadMessages();
       return;
     }
-    await loadMessages();
+    setBusyAction("");
+    if (!response.ok) {
+      setNote("这封信暂时删不掉");
+      await loadMessages();
+      return;
+    }
   }
 
   return (
@@ -147,7 +196,9 @@ export default function AdminClient() {
                 onChange={(event) => setPassword(event.target.value)}
               />
             </label>
-            <button type="submit" className="send-button">进入</button>
+            <button type="submit" className="send-button" disabled={loginBusy}>
+              {loginBusy ? "进入中" : "进入"}
+            </button>
             <p className={`form-note ${note ? "show" : ""}`} aria-live="polite">{note}</p>
           </form>
         ) : (
@@ -161,6 +212,11 @@ export default function AdminClient() {
               {messages.length ? (
                 messages.map((message) => {
                   const nickname = message.nickname?.trim() || "匿名";
+                  const deleting = busyAction === actionKey(message.id, "delete");
+                  const publishing = busyAction === actionKey(message.id, "publish");
+                  const unpublishing = busyAction === actionKey(message.id, "unpublish");
+                  const replying = busyAction === actionKey(message.id, "reply");
+                  const messageBusy = busyAction.startsWith(`${message.id}:`);
                   return (
                     <article className="message-card" key={message.id}>
                       <div className="message-meta">
@@ -178,48 +234,51 @@ export default function AdminClient() {
                       </div>
                       <ReplyEditor
                         message={message}
+                        busy={replying}
                         onConfirm={(id, reply) =>
-                          updateMessage(id, { reply }, "这封回信暂时确认不了")
+                          updateMessage(id, { reply }, "这封回信暂时确认不了", "reply")
                         }
                       />
                       <div className="message-actions">
                         <button
                           type="button"
-                          className="text-button danger-button"
-                          disabled={busyId === String(message.id)}
+                          className={`text-button danger-button${deleting ? " is-busy" : ""}`}
+                          disabled={messageBusy}
                           onClick={() => removeMessage(message.id)}
                         >
-                          删除
+                          {deleting ? "删除中" : "删除"}
                         </button>
                         {message.isPublic ? (
                           <button
                             type="button"
-                            className="text-button publish-button unpublish-button"
-                            disabled={busyId === String(message.id)}
+                            className={`text-button publish-button unpublish-button${unpublishing ? " is-busy" : ""}`}
+                            disabled={messageBusy}
                             onClick={() =>
                               updateMessage(
                                 message.id,
                                 { isPublic: false },
-                                "这封信暂时改不了公开状态"
+                                "这封信暂时改不了公开状态",
+                                "unpublish"
                               )
                             }
                           >
-                            取消公开
+                            {unpublishing ? "取消中" : "取消公开"}
                           </button>
                         ) : message.allowPublic ? (
                           <button
                             type="button"
-                            className="text-button publish-button"
-                            disabled={busyId === String(message.id)}
+                            className={`text-button publish-button${publishing ? " is-busy" : ""}`}
+                            disabled={messageBusy}
                             onClick={() =>
                               updateMessage(
                                 message.id,
                                 { isPublic: true },
-                                "这封信暂时改不了公开状态"
+                                "这封信暂时改不了公开状态",
+                                "publish"
                               )
                             }
                           >
-                            公开
+                            {publishing ? "公开中" : "公开"}
                           </button>
                         ) : null}
                       </div>
