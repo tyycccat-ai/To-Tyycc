@@ -418,25 +418,36 @@ textarea:focus {
   align-items: center;
   justify-content: center;
   justify-self: center;
-  min-width: 98px;
-  min-height: 40px;
+  min-width: 104px;
+  height: 42px;
   margin-top: 2px;
-  padding: 0 20px;
+  padding: 0 24px;
   border: 1px solid var(--surface-line);
   border-radius: 999px;
   color: var(--button-text);
   background: var(--button-bg);
   box-shadow:
-    0 12px 26px rgba(217, 133, 150, 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.68);
+    0 12px 26px rgba(217, 133, 150, 0.16),
+    inset 0 0 0 1px color-mix(in srgb, var(--surface-line) 42%, transparent);
   cursor: pointer;
+  font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
   font-size: 13px;
   font-weight: 650;
+  line-height: 1;
   transition:
     transform 180ms ease,
     background 180ms ease,
     box-shadow 180ms ease,
     filter 180ms ease;
+}
+
+.send-button span {
+  display: inline-flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  transform: translateY(-0.5px);
 }
 
 .send-button:disabled {
@@ -450,8 +461,8 @@ textarea:focus {
   transform: translateY(-2px);
   background: var(--button-bg-hover);
   box-shadow:
-    0 16px 32px rgba(217, 133, 150, 0.24),
-    inset 0 1px 0 rgba(255, 255, 255, 0.72);
+    0 16px 32px rgba(217, 133, 150, 0.22),
+    inset 0 0 0 1px color-mix(in srgb, var(--surface-line-strong) 48%, transparent);
 }
 
 .send-button:focus-visible {
