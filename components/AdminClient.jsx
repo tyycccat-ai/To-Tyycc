@@ -90,14 +90,14 @@ function ReplyArea({ message, onConfirm, onAdd, busy, supplementBusy, note }) {
         >
           {buttonText}
         </button>
-        {hasReply ? (
+        {hasReply && !supplement ? (
           <button
             type="button"
-            className={`text-button reply-confirm-button supplement-toggle${supplement ? " is-confirmed" : ""}`}
+            className="text-button reply-confirm-button supplement-toggle"
             disabled={supplementBusy}
             onClick={toggleSupplement}
           >
-            {supplement ? "已补充" : "补充"}
+            补充
           </button>
         ) : null}
       </div>
@@ -117,6 +117,17 @@ function ReplyArea({ message, onConfirm, onAdd, busy, supplementBusy, note }) {
                 <p>{supplement.content}</p>
               </article>
             </div>
+          ) : null}
+
+          {supplement && !supplementOpen ? (
+            <button
+              type="button"
+              className="text-button reply-confirm-button supplement-toggle is-confirmed"
+              disabled={supplementBusy}
+              onClick={toggleSupplement}
+            >
+              已补充
+            </button>
           ) : null}
 
           {supplementOpen ? (

@@ -841,6 +841,10 @@ textarea:focus {
   flex: 0 0 auto;
 }
 
+.supplement-section > .supplement-toggle {
+  justify-self: end;
+}
+
 .supplement-editor {
   display: grid;
   gap: 9px;
