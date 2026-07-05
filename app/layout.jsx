@@ -1,4 +1,5 @@
 import "./globals.css";
+import ThemeToggle from "../components/ThemeToggle";
 
 export const metadata = {
   title: "T o T 匿名信箱",
@@ -20,9 +21,25 @@ export const viewport = {
 };
 
 export default function RootLayout({ children }) {
+  const themeInitScript = `
+    (function () {
+      try {
+        var hour = new Date().getHours();
+        var theme = hour >= 7 && hour < 19 ? "day" : "night";
+        document.documentElement.dataset.theme = theme;
+      } catch (error) {}
+    })();
+  `;
+
   return (
-    <html lang="zh-CN">
-      <body>{children}</body>
+    <html lang="zh-CN" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
+      <body>
+        <ThemeToggle />
+        {children}
+      </body>
     </html>
   );
 }
