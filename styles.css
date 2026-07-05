@@ -790,6 +790,12 @@ textarea:focus {
   justify-content: flex-end;
 }
 
+.reply-actions {
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
 .supplement-section {
   display: grid;
   gap: 10px;
@@ -832,7 +838,7 @@ textarea:focus {
 }
 
 .supplement-toggle {
-  justify-self: start;
+  flex: 0 0 auto;
 }
 
 .supplement-editor {

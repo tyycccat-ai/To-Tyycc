@@ -18,12 +18,21 @@ async function requestJson(url, options = {}) {
   return { ok: response.ok, status: response.status, data };
 }
 
-function ReplyEditor({ message, onConfirm, busy }) {
+function ReplyArea({ message, onConfirm, onAdd, busy, supplementBusy, note }) {
   const [reply, setReply] = useState(message.reply || "");
+  const [supplementOpen, setSupplementOpen] = useState(false);
+  const [supplementDraft, setSupplementDraft] = useState("");
+  const supplementInputRef = useRef(null);
   const original = message.reply || "";
+  const supplements = message.replySupplements || [];
+  const supplement = supplements[0] || null;
+  const supplementOriginal = supplement?.content || "";
   const changed = reply.trim() !== original.trim();
   const hasReply = Boolean(original.trim());
   const canConfirm = !busy && changed && Boolean(reply.trim());
+  const supplementChanged = supplementDraft.trim() !== supplementOriginal.trim();
+  const canSubmitSupplement =
+    !supplementBusy && Boolean(supplementDraft.trim()) && (!supplement || supplementChanged);
   const buttonText = busy
     ? "确认中"
     : changed
@@ -37,6 +46,28 @@ function ReplyEditor({ message, onConfirm, busy }) {
   useEffect(() => {
     setReply(message.reply || "");
   }, [message.id, message.reply]);
+
+  useEffect(() => {
+    setSupplementDraft(supplement?.content || "");
+    setSupplementOpen(false);
+  }, [message.id, supplement?.id, supplement?.content]);
+
+  function toggleSupplement() {
+    setSupplementOpen((value) => !value);
+    setSupplementDraft(supplement?.content || "");
+    setTimeout(() => supplementInputRef.current?.focus(), 0);
+  }
+
+  function submitSupplement() {
+    if (!supplementDraft.trim()) {
+      supplementInputRef.current?.focus();
+      return;
+    }
+    onAdd(message.id, supplementDraft, (savedSupplement) => {
+      setSupplementDraft(savedSupplement?.content || supplementDraft);
+      setSupplementOpen(false);
+    });
+  }
 
   return (
     <>
@@ -59,93 +90,61 @@ function ReplyEditor({ message, onConfirm, busy }) {
         >
           {buttonText}
         </button>
-      </div>
-    </>
-  );
-}
-
-function SupplementReplies({ message, onAdd, busy, note }) {
-  const [open, setOpen] = useState(false);
-  const [draft, setDraft] = useState("");
-  const inputRef = useRef(null);
-  const supplements = message.replySupplements || [];
-  const supplement = supplements[0] || null;
-  const original = supplement?.content || "";
-  const changed = draft.trim() !== original.trim();
-  const canSubmit = !busy && Boolean(draft.trim()) && (!supplement || changed);
-
-  useEffect(() => {
-    setDraft(supplement?.content || "");
-    setOpen(false);
-  }, [message.id, supplement?.id, supplement?.content]);
-
-  function submitSupplement() {
-    if (!draft.trim()) {
-      inputRef.current?.focus();
-      return;
-    }
-    onAdd(message.id, draft, (savedSupplement) => {
-      setDraft(savedSupplement?.content || draft);
-      setOpen(false);
-    });
-  }
-
-  if (!message.reply?.trim()) return null;
-
-  return (
-    <section className="supplement-section" aria-label="补充回信">
-      {supplement ? (
-        <div className="supplement-list">
-          <article className="supplement-item" key={supplement.id}>
-            <div className="supplement-meta">
-              <span>补充回信</span>
-              <time>{formatTime(supplement.createdAt, {
-                dateStyle: "medium",
-                timeStyle: "short"
-              })}</time>
-            </div>
-            <p>{supplement.content}</p>
-          </article>
-        </div>
-      ) : null}
-
-      <button
-        type="button"
-        className={`text-button reply-confirm-button supplement-toggle${supplement ? " is-confirmed" : ""}`}
-        disabled={busy}
-        onClick={() => {
-          setOpen((value) => !value);
-          setDraft(supplement?.content || "");
-          setTimeout(() => inputRef.current?.focus(), 0);
-        }}
-      >
-        {supplement ? "已补充" : "补充"}
-      </button>
-
-      {open ? (
-        <div className="supplement-editor">
-          <textarea
-            ref={inputRef}
-            value={draft}
-            maxLength={3000}
-            rows={3}
-            placeholder="继续写一封补充回信"
-            onChange={(event) => setDraft(event.target.value)}
-          />
+        {hasReply ? (
           <button
             type="button"
-            className={`text-button reply-confirm-button${supplement && !changed ? " is-confirmed" : ""}${busy ? " is-busy" : ""}`}
-            disabled={!canSubmit}
-            onClick={submitSupplement}
+            className={`text-button reply-confirm-button supplement-toggle${supplement ? " is-confirmed" : ""}`}
+            disabled={supplementBusy}
+            onClick={toggleSupplement}
           >
-            {busy ? "补充中" : supplement ? (changed ? "确认修改" : "已补充") : "确认补充"}
+            {supplement ? "已补充" : "补充"}
           </button>
-          <p className={`form-note supplement-note ${note ? "show" : ""}`} aria-live="polite">
-            {note}
-          </p>
-        </div>
+        ) : null}
+      </div>
+
+      {hasReply ? (
+        <section className="supplement-section" aria-label="补充回信">
+          {supplement ? (
+            <div className="supplement-list">
+              <article className="supplement-item" key={supplement.id}>
+                <div className="supplement-meta">
+                  <span>补充回信</span>
+                  <time>{formatTime(supplement.createdAt, {
+                    dateStyle: "medium",
+                    timeStyle: "short"
+                  })}</time>
+                </div>
+                <p>{supplement.content}</p>
+              </article>
+            </div>
+          ) : null}
+
+          {supplementOpen ? (
+            <div className="supplement-editor">
+              <textarea
+                ref={supplementInputRef}
+                value={supplementDraft}
+                maxLength={3000}
+                rows={3}
+                placeholder="继续写一封补充回信"
+                onChange={(event) => setSupplementDraft(event.target.value)}
+              />
+              <button
+                type="button"
+                className={`text-button reply-confirm-button${supplement && !supplementChanged ? " is-confirmed" : ""}${supplementBusy ? " is-busy" : ""}`}
+                disabled={!canSubmitSupplement}
+                onClick={submitSupplement}
+              >
+                {supplementBusy ? "补充中" : supplement ? (supplementChanged ? "确认修改" : "已补充") : "确认补充"}
+              </button>
+              <p className={`form-note supplement-note ${note ? "show" : ""}`} aria-live="polite">
+                {note}
+              </p>
+            </div>
+          ) : null}
+        </section>
       ) : null}
-    </section>
+    </>
   );
 }
 
@@ -373,16 +372,13 @@ export default function AdminClient() {
                         <span>{message.isPublic ? "已公开：是" : "已公开：否"}</span>
                         <span>{message.likes || 0} 个喜欢</span>
                       </div>
-                      <ReplyEditor
+                      <ReplyArea
                         message={message}
                         busy={messageBusy || replying}
                         onConfirm={(id, reply) =>
                           updateMessage(id, { reply }, "这封回信暂时确认不了", "reply")
                         }
-                      />
-                      <SupplementReplies
-                        message={message}
-                        busy={messageBusy || supplementing}
+                        supplementBusy={messageBusy || supplementing}
                         note={supplementNotes[message.id] || ""}
                         onAdd={addSupplement}
                       />
