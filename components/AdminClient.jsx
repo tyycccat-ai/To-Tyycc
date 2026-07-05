@@ -171,6 +171,7 @@ export default function AdminClient() {
   const [supplementNotes, setSupplementNotes] = useState({});
   const [busyAction, setBusyAction] = useState("");
   const [loginBusy, setLoginBusy] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   useEffect(() => {
     loadMessages();
@@ -322,6 +323,7 @@ export default function AdminClient() {
       await loadMessages();
       return;
     }
+    setDeleteTarget(null);
   }
 
   return (
@@ -398,7 +400,7 @@ export default function AdminClient() {
                           type="button"
                           className={`text-button danger-button${deleting ? " is-busy" : ""}`}
                           disabled={messageBusy}
-                          onClick={() => removeMessage(message.id)}
+                          onClick={() => setDeleteTarget(message)}
                         >
                           {deleting ? "删除中" : "删除"}
                         </button>
@@ -443,6 +445,37 @@ export default function AdminClient() {
                 <p className="empty-state">还没有新的信。</p>
               )}
             </div>
+            {deleteTarget ? (
+              <div className="admin-confirm-backdrop" role="presentation">
+                <section
+                  className="admin-confirm-dialog"
+                  role="dialog"
+                  aria-modal="true"
+                  aria-labelledby="deleteConfirmTitle"
+                >
+                  <h2 id="deleteConfirmTitle">确认删除这封信吗？</h2>
+                  <p>删除后，公开页和回信记录里都不会再显示它。</p>
+                  <div className="admin-confirm-actions">
+                    <button
+                      type="button"
+                      className="text-button confirm-cancel-button"
+                      disabled={busyAction === actionKey(deleteTarget.id, "delete")}
+                      onClick={() => setDeleteTarget(null)}
+                    >
+                      否
+                    </button>
+                    <button
+                      type="button"
+                      className="text-button confirm-delete-button"
+                      disabled={busyAction === actionKey(deleteTarget.id, "delete")}
+                      onClick={() => removeMessage(deleteTarget.id)}
+                    >
+                      {busyAction === actionKey(deleteTarget.id, "delete") ? "删除中" : "是"}
+                    </button>
+                  </div>
+                </section>
+              </div>
+            ) : null}
           </section>
         )}
       </section>

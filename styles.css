@@ -1049,10 +1049,10 @@ textarea:focus {
 
 .message-actions .text-button {
   min-height: 30px;
-  padding: 0 11px;
-  border: 1px solid rgba(157, 93, 110, 0.12);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.46);
+  padding: 0 4px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
   box-shadow: none;
   font-size: 12px;
   font-weight: 650;
@@ -1064,8 +1064,7 @@ textarea:focus {
 }
 
 .message-actions .text-button:hover:not(:disabled) {
-  border-color: rgba(217, 133, 150, 0.26);
-  background: rgba(255, 247, 248, 0.82);
+  background: transparent;
   transform: translateY(-1px);
 }
 
@@ -1075,6 +1074,75 @@ textarea:focus {
 
 .message-actions .publish-button:hover:not(:disabled) {
   color: #895667;
+}
+
+.admin-confirm-backdrop {
+  position: fixed;
+  z-index: 30;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 22px;
+  background: rgba(255, 247, 248, 0.52);
+  backdrop-filter: blur(10px);
+}
+
+.admin-confirm-dialog {
+  display: grid;
+  width: min(100%, 300px);
+  gap: 10px;
+  padding: 20px 18px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.78);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 24px 70px rgba(183, 119, 137, 0.22);
+  text-align: center;
+}
+
+.admin-confirm-dialog h2 {
+  margin: 0;
+  color: #715b63;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.admin-confirm-dialog p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.admin-confirm-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.admin-confirm-actions .text-button {
+  min-width: 70px;
+  min-height: 32px;
+  border-radius: 999px;
+  font-size: 13px;
+}
+
+.confirm-cancel-button {
+  color: rgba(113, 91, 99, 0.72);
+  background: rgba(255, 247, 248, 0.72);
+}
+
+.confirm-delete-button {
+  color: #fff;
+  background: #d98596;
+}
+
+.confirm-cancel-button:hover:not(:disabled) {
+  background: rgba(247, 221, 226, 0.7);
+}
+
+.confirm-delete-button:hover:not(:disabled) {
+  background: #c87588;
 }
 
 .empty-state {
