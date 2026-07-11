@@ -135,9 +135,9 @@ export default function TotClient() {
               <p>{notes.length ? `${notes.length} 张便利贴` : "还没有便利贴"}</p>
               <button type="button" className="text-button" onClick={logout}>收起</button>
             </div>
-            {newest ? (
+            {newest?.locationRegion ? (
               <p className="sticky-board-hint">
-                最近一张来自 {newest.locationRegion || "某处"}
+                最近一张来自 {newest.locationRegion}
               </p>
             ) : null}
             <div className="sticky-note-list">
@@ -149,7 +149,7 @@ export default function TotClient() {
                       <div className="tot-note-meta">
                         <time>{dateParts.date}</time>
                         <span>{dateParts.weekday}</span>
-                        <span>{item.locationRegion || "未写地点"}</span>
+                        {item.locationRegion ? <span>{item.locationRegion}</span> : null}
                       </div>
                       <p>{item.content}</p>
                     </article>

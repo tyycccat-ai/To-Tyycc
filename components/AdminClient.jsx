@@ -162,7 +162,6 @@ function ReplyArea({ message, onConfirm, onAdd, busy, supplementBusy, note }) {
 function StickyAdmin() {
   const [notes, setNotes] = useState([]);
   const [content, setContent] = useState("");
-  const [location, setLocation] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
   const [durationHours, setDurationHours] = useState("24");
   const [expiresAt, setExpiresAt] = useState("");
@@ -171,7 +170,6 @@ function StickyAdmin() {
   const [busyAction, setBusyAction] = useState("");
   const [editingId, setEditingId] = useState("");
   const [editContent, setEditContent] = useState("");
-  const [editLocation, setEditLocation] = useState("");
 
   useEffect(() => {
     loadStickyNotes();
@@ -200,7 +198,7 @@ function StickyAdmin() {
     setNote("");
     const response = await requestJson("/api/admin/sticky-notes", {
       method: "POST",
-      body: { content, location }
+      body: { content, location: "" }
     });
     setBusyAction("");
     if (!response.ok) {
@@ -209,7 +207,6 @@ function StickyAdmin() {
     }
     setNotes((current) => [response.data.note, ...current]);
     setContent("");
-    setLocation("");
   }
 
   async function generatePassword(event) {
@@ -235,14 +232,12 @@ function StickyAdmin() {
   function startEdit(item) {
     setEditingId(item.id);
     setEditContent(item.content || "");
-    setEditLocation(item.location || item.locationRegion || "");
     setNote("");
   }
 
   function cancelEdit() {
     setEditingId("");
     setEditContent("");
-    setEditLocation("");
   }
 
   async function saveEdit(id) {
@@ -251,7 +246,7 @@ function StickyAdmin() {
     setNote("");
     const response = await requestJson(`/api/admin/sticky-notes/${encodeURIComponent(id)}`, {
       method: "PATCH",
-      body: { content: editContent, location: editLocation }
+      body: { content: editContent, location: "" }
     });
     setBusyAction("");
     if (!response.ok) {
@@ -285,7 +280,6 @@ function StickyAdmin() {
           <h2 id="stickyAdminTitle">ToT 便利贴</h2>
           <p>{passwordSet ? "只在这里查看当前访问密码。" : "先生成访问密码，这里才会开放。"}</p>
         </div>
-        <a className="soft-link" href="/tot">查看页面</a>
       </div>
 
       <form className="sticky-password-form" onSubmit={generatePassword}>
@@ -330,16 +324,6 @@ function StickyAdmin() {
             onChange={(event) => setContent(event.target.value)}
           />
         </label>
-        <label>
-          <span>发布地点</span>
-          <input
-            type="text"
-            maxLength={40}
-            placeholder="例如 广东、上海、东京"
-            value={location}
-            onChange={(event) => setLocation(event.target.value)}
-          />
-        </label>
         <button type="submit" className="send-button" disabled={busyAction === "create"}>
           <span>{busyAction === "create" ? "贴上中" : "贴上便利贴"}</span>
         </button>
@@ -364,17 +348,10 @@ function StickyAdmin() {
                       value={editContent}
                       onChange={(event) => setEditContent(event.target.value)}
                     />
-                    <input
-                      type="text"
-                      maxLength={40}
-                      value={editLocation}
-                      onChange={(event) => setEditLocation(event.target.value)}
-                    />
                   </>
                 ) : (
                   <>
                     <div className="message-meta">
-                      <span>{item.locationRegion || "未写地点"}</span>
                       <time>{formatTime(item.createdAt, {
                         dateStyle: "medium",
                         timeStyle: "short"
@@ -604,6 +581,9 @@ export default function AdminClient() {
 
   return (
     <main className="page-shell admin-shell" aria-labelledby="adminTitle">
+      <a className="home-sticky-link admin-sticky-link" href="/tot" aria-label="进入 ToT 便利贴">
+        ToT 便利贴
+      </a>
       <section className="panel-page">
         <header className="panel-header">
           <a className="soft-link panel-back" href="/">返回信箱</a>

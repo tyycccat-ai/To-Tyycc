@@ -1585,6 +1585,12 @@ textarea:focus {
   line-height: 1.7;
 }
 
+.sticky-compose-form textarea {
+  min-height: 86px;
+  font-size: 13px;
+  line-height: 1.65;
+}
+
 .sticky-compose-form .send-button {
   justify-self: end;
 }
