@@ -420,6 +420,7 @@ export default function AdminClient() {
   const [password, setPassword] = useState("");
   const [messages, setMessages] = useState([]);
   const [authorized, setAuthorized] = useState(false);
+  const [adminView, setAdminView] = useState("menu");
   const [note, setNote] = useState("");
   const [supplementNotes, setSupplementNotes] = useState({});
   const [busyAction, setBusyAction] = useState("");
@@ -466,12 +467,14 @@ export default function AdminClient() {
       return;
     }
     setPassword("");
+    setAdminView("menu");
     await loadMessages();
   }
 
   async function logout() {
     await requestJson("/api/admin/logout", { method: "POST" });
     setAuthorized(false);
+    setAdminView("menu");
     setMessages([]);
   }
 
@@ -581,14 +584,27 @@ export default function AdminClient() {
 
   return (
     <main className="page-shell admin-shell" aria-labelledby="adminTitle">
-      <a className="home-sticky-link admin-sticky-link" href="/tot" aria-label="进入 ToT 便利贴">
-        ToT 便利贴
-      </a>
       <section className="panel-page">
         <header className="panel-header">
-          <a className="soft-link panel-back" href="/">返回信箱</a>
-          <h1 id="adminTitle">Tyycc 的信箱</h1>
-          <p>这里会收好每一封匿名信。</p>
+          <a className="soft-link panel-back" href="/">返回匿名信箱</a>
+          <h1 id="adminTitle">
+            {!authorized
+              ? "Tyycc 的信箱"
+              : adminView === "mailbox"
+                ? "Tyycc 的信箱"
+                : adminView === "sticky"
+                  ? "ToT 便利贴"
+                  : "管理页面"}
+          </h1>
+          <p>
+            {!authorized
+              ? "这里会收好每一封匿名信。"
+              : adminView === "mailbox"
+                ? "这里会收好每一封匿名信。"
+                : adminView === "sticky"
+                  ? "这里管理只给知道口令的人看的碎碎念。"
+                  : "选择你要管理的内容。"}
+          </p>
         </header>
 
         {!authorized ? (
@@ -609,10 +625,37 @@ export default function AdminClient() {
             </button>
             <p className={`form-note ${note ? "show" : ""}`} aria-live="polite">{note}</p>
           </form>
+        ) : adminView === "menu" ? (
+          <section className="admin-menu" aria-label="管理入口">
+            <button type="button" className="admin-menu-card" onClick={() => setAdminView("mailbox")}>
+              <span>信箱</span>
+              <strong>Tyycc 的信箱</strong>
+            </button>
+            <button type="button" className="admin-menu-card" onClick={() => setAdminView("sticky")}>
+              <span>便利贴</span>
+              <strong>ToT 便利贴</strong>
+            </button>
+            <button type="button" className="text-button admin-menu-logout" onClick={logout}>
+              退出
+            </button>
+          </section>
+        ) : adminView === "sticky" ? (
+          <section className="admin-board" aria-label="便利贴管理">
+            <div className="board-toolbar">
+              <button type="button" className="text-button" onClick={() => setAdminView("menu")}>
+                返回管理页面
+              </button>
+              <button type="button" className="text-button" onClick={logout}>退出</button>
+            </div>
+            <StickyAdmin />
+          </section>
         ) : (
           <section className="admin-board" aria-label="留言管理">
             <div className="board-toolbar">
               <p>{messages.length} 封信</p>
+              <button type="button" className="text-button" onClick={() => setAdminView("menu")}>
+                返回管理页面
+              </button>
               <button type="button" className="text-button" onClick={logout}>退出</button>
             </div>
             <p className={`form-note ${note ? "show" : ""}`} aria-live="polite">{note}</p>
@@ -732,7 +775,6 @@ export default function AdminClient() {
                 </section>
               </div>
             ) : null}
-            <StickyAdmin />
           </section>
         )}
       </section>

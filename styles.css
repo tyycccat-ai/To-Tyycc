@@ -832,6 +832,53 @@ textarea:focus {
   box-shadow: 0 0 0 4px var(--focus-ring);
 }
 
+.admin-menu {
+  display: grid;
+  gap: 12px;
+}
+
+.admin-menu-card {
+  display: grid;
+  gap: 5px;
+  width: 100%;
+  min-height: 84px;
+  padding: 18px;
+  border: 1px solid var(--surface-line);
+  border-radius: 8px;
+  color: var(--text);
+  background: var(--surface);
+  box-shadow: var(--message-card-shadow);
+  cursor: pointer;
+  text-align: left;
+}
+
+.admin-menu-card span {
+  color: var(--text-soft);
+  font-size: 12px;
+}
+
+.admin-menu-card strong {
+  color: var(--subheading);
+  font-size: 17px;
+  line-height: 1.4;
+}
+
+.admin-menu-card:hover {
+  border-color: var(--surface-line-strong);
+  background: var(--surface-strong);
+  transform: translateY(-1px);
+}
+
+.admin-menu-card:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 3px;
+}
+
+.admin-menu-logout {
+  justify-self: center;
+  margin-top: 4px;
+}
+
 .hidden {
   display: none !important;
 }
