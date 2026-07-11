@@ -274,14 +274,7 @@ function StickyAdmin() {
   }
 
   return (
-    <section className="sticky-admin-panel" aria-labelledby="stickyAdminTitle">
-      <div className="sticky-admin-heading">
-        <div>
-          <h2 id="stickyAdminTitle">ToT 便利贴</h2>
-          <p>{passwordSet ? "只在这里查看当前访问密码。" : "先生成访问密码，这里才会开放。"}</p>
-        </div>
-      </div>
-
+    <section className="sticky-admin-panel" aria-label="ToT 便利贴管理">
       <form className="sticky-password-form" onSubmit={generatePassword}>
         <label>
           <span>有效时间</span>
