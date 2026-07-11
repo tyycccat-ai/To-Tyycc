@@ -1649,10 +1649,9 @@ textarea:focus {
   padding: 12px 10px 8px;
   color: var(--text);
   background: transparent;
+  font-family: inherit;
   font-size: 15px;
   line-height: 1.72;
-  font-family:
-    "Noto Serif SC", "Songti SC", "Microsoft YaHei", "PingFang SC", serif;
 }
 
 .sticky-compose-form textarea::placeholder {
