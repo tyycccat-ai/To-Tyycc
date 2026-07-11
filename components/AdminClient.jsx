@@ -159,6 +159,282 @@ function ReplyArea({ message, onConfirm, onAdd, busy, supplementBusy, note }) {
   );
 }
 
+function StickyAdmin() {
+  const [notes, setNotes] = useState([]);
+  const [content, setContent] = useState("");
+  const [location, setLocation] = useState("");
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [durationHours, setDurationHours] = useState("24");
+  const [expiresAt, setExpiresAt] = useState("");
+  const [passwordSet, setPasswordSet] = useState(false);
+  const [note, setNote] = useState("");
+  const [busyAction, setBusyAction] = useState("");
+  const [editingId, setEditingId] = useState("");
+  const [editContent, setEditContent] = useState("");
+  const [editLocation, setEditLocation] = useState("");
+
+  useEffect(() => {
+    loadStickyNotes();
+  }, []);
+
+  async function loadStickyNotes() {
+    const response = await requestJson("/api/admin/sticky-notes");
+    if (!response.ok) {
+      setNote("便利贴暂时打不开");
+      return;
+    }
+    setNotes(response.data.notes || []);
+    setPasswordSet(Boolean(response.data.passwordSet));
+    setCurrentPassword(response.data.currentPassword || "");
+    setDurationHours(String(response.data.durationHours || 24));
+    setExpiresAt(response.data.expiresAt || "");
+    if (response.data.rotated) {
+      setNote("上一枚访问密码已过期，系统已经自动生成了新密码。");
+    }
+  }
+
+  async function publishSticky(event) {
+    event.preventDefault();
+    if (!content.trim()) return;
+    setBusyAction("create");
+    setNote("");
+    const response = await requestJson("/api/admin/sticky-notes", {
+      method: "POST",
+      body: { content, location }
+    });
+    setBusyAction("");
+    if (!response.ok) {
+      setNote("这张便利贴暂时贴不上去");
+      return;
+    }
+    setNotes((current) => [response.data.note, ...current]);
+    setContent("");
+    setLocation("");
+  }
+
+  async function generatePassword(event) {
+    event.preventDefault();
+    setBusyAction("password");
+    setNote("");
+    const response = await requestJson("/api/admin/sticky-password", {
+      method: "PATCH",
+      body: { durationHours }
+    });
+    setBusyAction("");
+    if (!response.ok) {
+      setNote("访问密码暂时生成不了");
+      return;
+    }
+    setPasswordSet(true);
+    setCurrentPassword(response.data.currentPassword || "");
+    setDurationHours(String(response.data.durationHours || durationHours));
+    setExpiresAt(response.data.expiresAt || "");
+    setNote("新的访问密码已经生成，旧口令会立刻失效。");
+  }
+
+  function startEdit(item) {
+    setEditingId(item.id);
+    setEditContent(item.content || "");
+    setEditLocation(item.location || item.locationRegion || "");
+    setNote("");
+  }
+
+  function cancelEdit() {
+    setEditingId("");
+    setEditContent("");
+    setEditLocation("");
+  }
+
+  async function saveEdit(id) {
+    if (!editContent.trim()) return;
+    setBusyAction(`edit:${id}`);
+    setNote("");
+    const response = await requestJson(`/api/admin/sticky-notes/${encodeURIComponent(id)}`, {
+      method: "PATCH",
+      body: { content: editContent, location: editLocation }
+    });
+    setBusyAction("");
+    if (!response.ok) {
+      setNote("这张便利贴暂时改不了");
+      return;
+    }
+    setNotes((current) =>
+      current.map((item) => (String(item.id) === String(id) ? response.data.note : item))
+    );
+    cancelEdit();
+  }
+
+  async function removeSticky(id) {
+    setBusyAction(`delete:${id}`);
+    setNote("");
+    const response = await requestJson(`/api/admin/sticky-notes/${encodeURIComponent(id)}`, {
+      method: "DELETE"
+    });
+    setBusyAction("");
+    if (!response.ok) {
+      setNote("这张便利贴暂时撕不下来");
+      return;
+    }
+    setNotes((current) => current.filter((item) => String(item.id) !== String(id)));
+  }
+
+  return (
+    <section className="sticky-admin-panel" aria-labelledby="stickyAdminTitle">
+      <div className="sticky-admin-heading">
+        <div>
+          <h2 id="stickyAdminTitle">ToT 便利贴</h2>
+          <p>{passwordSet ? "只在这里查看当前访问密码。" : "先生成访问密码，这里才会开放。"}</p>
+        </div>
+        <a className="soft-link" href="/tot">查看页面</a>
+      </div>
+
+      <form className="sticky-password-form" onSubmit={generatePassword}>
+        <label>
+          <span>有效时间</span>
+          <select
+            value={durationHours}
+            onChange={(event) => setDurationHours(event.target.value)}
+          >
+            <option value="1">1 小时</option>
+            <option value="6">6 小时</option>
+            <option value="12">12 小时</option>
+            <option value="24">24 小时</option>
+            <option value="48">48 小时</option>
+            <option value="72">72 小时</option>
+            <option value="168">7 天</option>
+          </select>
+        </label>
+        <button type="submit" className="text-button reply-confirm-button" disabled={busyAction === "password"}>
+          {busyAction === "password" ? "生成中" : passwordSet ? "重新生成" : "生成访问密码"}
+        </button>
+      </form>
+      {passwordSet ? (
+        <div className="sticky-password-card" aria-label="当前 ToT 便利贴访问密码">
+          <span>当前访问密码</span>
+          <strong>{currentPassword}</strong>
+          <time>{expiresAt ? `有效至 ${formatTime(expiresAt, {
+            dateStyle: "medium",
+            timeStyle: "short"
+          })}` : "未设置到期时间"}</time>
+        </div>
+      ) : null}
+
+      <form className="sticky-compose-form" onSubmit={publishSticky}>
+        <label>
+          <span>碎碎念</span>
+          <textarea
+            rows={4}
+            maxLength={2000}
+            placeholder="写一点现在想贴住的话"
+            value={content}
+            onChange={(event) => setContent(event.target.value)}
+          />
+        </label>
+        <label>
+          <span>发布地点</span>
+          <input
+            type="text"
+            maxLength={40}
+            placeholder="例如 广东、上海、东京"
+            value={location}
+            onChange={(event) => setLocation(event.target.value)}
+          />
+        </label>
+        <button type="submit" className="send-button" disabled={busyAction === "create"}>
+          <span>{busyAction === "create" ? "贴上中" : "贴上便利贴"}</span>
+        </button>
+      </form>
+
+      <p className={`form-note sticky-admin-note ${note ? "show" : ""}`} aria-live="polite">
+        {note}
+      </p>
+
+      <div className="sticky-admin-list">
+        {notes.length ? (
+          notes.map((item) => {
+            const editing = editingId === item.id;
+            const busy = busyAction.endsWith(`:${item.id}`);
+            return (
+              <article className="sticky-admin-item" key={item.id}>
+                {editing ? (
+                  <>
+                    <textarea
+                      rows={3}
+                      maxLength={2000}
+                      value={editContent}
+                      onChange={(event) => setEditContent(event.target.value)}
+                    />
+                    <input
+                      type="text"
+                      maxLength={40}
+                      value={editLocation}
+                      onChange={(event) => setEditLocation(event.target.value)}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <div className="message-meta">
+                      <span>{item.locationRegion || "未写地点"}</span>
+                      <time>{formatTime(item.createdAt, {
+                        dateStyle: "medium",
+                        timeStyle: "short"
+                      })}</time>
+                    </div>
+                    <p>{item.content}</p>
+                  </>
+                )}
+                <div className="message-actions">
+                  {editing ? (
+                    <>
+                      <button
+                        type="button"
+                        className="text-button"
+                        disabled={busy}
+                        onClick={cancelEdit}
+                      >
+                        取消
+                      </button>
+                      <button
+                        type="button"
+                        className="text-button publish-button"
+                        disabled={busy}
+                        onClick={() => saveEdit(item.id)}
+                      >
+                        {busy ? "保存中" : "保存"}
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        type="button"
+                        className="text-button"
+                        disabled={busy}
+                        onClick={() => startEdit(item)}
+                      >
+                        编辑
+                      </button>
+                      <button
+                        type="button"
+                        className="text-button danger-button"
+                        disabled={busy}
+                        onClick={() => removeSticky(item.id)}
+                      >
+                        {busyAction === `delete:${item.id}` ? "删除中" : "删除"}
+                      </button>
+                    </>
+                  )}
+                </div>
+              </article>
+            );
+          })
+        ) : (
+          <p className="empty-state">还没有便利贴。</p>
+        )}
+      </div>
+    </section>
+  );
+}
+
 function actionKey(id, action) {
   return `${id}:${action}`;
 }
@@ -476,6 +752,7 @@ export default function AdminClient() {
                 </section>
               </div>
             ) : null}
+            <StickyAdmin />
           </section>
         )}
       </section>

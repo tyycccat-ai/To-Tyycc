@@ -33,6 +33,7 @@ pnpm dev
 - 首页：http://localhost:3000/
 - 后台：http://localhost:3000/admin
 - 公开页：http://localhost:3000/public
+- ToT 便利贴：http://localhost:3000/tot
 
 ## Supabase 设置
 
@@ -83,6 +84,8 @@ Cloudflare 会提供长期 `*.pages.dev` 域名，详细步骤见 `CLOUDFLARE_DE
 - 昵称为空时公开显示“匿名”。
 - 后台可以删除留言，删除后前台不再显示。
 - 后台可以确认回信，用户回访时看到“你有一封新的回信”。
+- 后台可以自动生成 ToT 便利贴访问密码、设置有效时间、发布便利贴、修改或删除便利贴。
+- `/tot` 未输入正确访问密码时不会显示便利贴内容；后台修改密码后旧口令立即失效。
 - 手机微信、QQ、Safari、Chrome 均使用 Vercel HTTPS 地址测试。
 
 ## 旧本地版本

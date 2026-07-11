@@ -253,6 +253,9 @@ export default function HomeClient({ initialMessages }) {
 
   return (
     <main className="page-shell" aria-labelledby="site-title">
+      <a className="home-sticky-link" href="/tot" aria-label="进入 ToT 便利贴">
+        ToT 便利贴
+      </a>
       <section className="hero" aria-label="T o T 匿名留言箱首页">
         <img className="avatar" src="/assets/avatar.jpg" alt="Tyycc 的头像" />
 
@@ -309,7 +312,12 @@ export default function HomeClient({ initialMessages }) {
             <span>允许公开我的留言</span>
           </label>
 
-          <button type="submit" className="send-button" disabled={sending} aria-label="投递匿名留言">
+          <button
+            type="submit"
+            className="send-button letter-submit-button"
+            disabled={sending}
+            aria-label="投递匿名留言"
+          >
             <span>投递</span>
           </button>
           <p className={`form-note ${note ? "show" : ""}`} aria-live="polite">{note}</p>

@@ -25,6 +25,21 @@ create table if not exists public.reply_supplements (
   created_at timestamptz not null default timezone('utc', now())
 );
 
+create table if not exists public.sticky_notes (
+  id uuid primary key default gen_random_uuid(),
+  content text not null,
+  location text,
+  location_region text,
+  created_at timestamptz not null default timezone('utc', now()),
+  updated_at timestamptz not null default timezone('utc', now())
+);
+
+create table if not exists public.site_settings (
+  key text primary key,
+  value jsonb not null default '{}'::jsonb,
+  updated_at timestamptz not null default timezone('utc', now())
+);
+
 alter table public.messages add column if not exists reply text;
 alter table public.messages add column if not exists likes integer not null default 0;
 alter table public.messages add column if not exists receipt_token text;
@@ -33,6 +48,8 @@ alter table public.messages add column if not exists reply_supplements jsonb not
 
 alter table public.messages enable row level security;
 alter table public.reply_supplements enable row level security;
+alter table public.sticky_notes enable row level security;
+alter table public.site_settings enable row level security;
 
 drop policy if exists "anon insert messages" on public.messages;
 drop policy if exists "anon read public messages" on public.messages;
@@ -50,6 +67,10 @@ revoke all on table public.messages from anon;
 revoke all on table public.messages from authenticated;
 revoke all on table public.reply_supplements from anon;
 revoke all on table public.reply_supplements from authenticated;
+revoke all on table public.sticky_notes from anon;
+revoke all on table public.sticky_notes from authenticated;
+revoke all on table public.site_settings from anon;
+revoke all on table public.site_settings from authenticated;
 
 -- No anon/authenticated policies are created here on purpose.
 -- Visitor submission, public reading, likes, admin review, publish, delete,
