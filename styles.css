@@ -1314,7 +1314,7 @@ textarea:focus {
 .admin-confirm-dialog {
   display: grid;
   width: min(100%, 300px);
-  gap: 10px;
+  gap: 14px;
   padding: 20px 18px 16px;
   border: 1px solid var(--surface-line);
   border-radius: 8px;
@@ -1338,35 +1338,38 @@ textarea:focus {
 }
 
 .admin-confirm-actions {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
   margin-top: 6px;
 }
 
 .admin-confirm-actions .text-button {
-  min-width: 70px;
-  min-height: 32px;
+  min-height: 34px;
+  padding: 0 18px;
+  border: 1px solid color-mix(in srgb, var(--rose) 16%, var(--surface-line));
   border-radius: 999px;
   font-size: 13px;
 }
 
 .confirm-cancel-button {
-  color: color-mix(in srgb, var(--subheading) 72%, transparent);
-  background: var(--surface-soft);
+  color: color-mix(in srgb, var(--rose-deep) 66%, var(--text-soft));
+  background: color-mix(in srgb, var(--pink-50) 70%, var(--surface) 30%);
 }
 
 .confirm-delete-button {
-  color: var(--button-text);
-  background: var(--rose);
+  color: color-mix(in srgb, var(--rose-deep) 76%, var(--text));
+  background: color-mix(in srgb, var(--pink-100) 76%, #fff7f9 24%);
 }
 
 .confirm-cancel-button:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--pink-100) 70%, transparent);
+  border-color: color-mix(in srgb, var(--rose) 24%, var(--surface-line));
+  background: color-mix(in srgb, var(--pink-100) 62%, var(--surface) 38%);
 }
 
 .confirm-delete-button:hover:not(:disabled) {
-  background: var(--button-bg-hover);
+  border-color: color-mix(in srgb, var(--rose) 30%, var(--surface-line));
+  background: color-mix(in srgb, var(--button-bg) 62%, #fff5f8 38%);
 }
 
 .empty-state {
@@ -1591,8 +1594,9 @@ textarea:focus {
 }
 
 .sticky-password-form {
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(86px, 0.42fr) auto;
   align-items: end;
+  width: min(100%, 360px);
 }
 
 .sticky-password-card {
@@ -1633,9 +1637,27 @@ textarea:focus {
 }
 
 .sticky-compose-form textarea {
-  min-height: 86px;
-  font-size: 13px;
-  line-height: 1.65;
+  min-height: 132px;
+  padding: 12px 10px 8px;
+  color: var(--text);
+  background: transparent;
+  font-size: 15px;
+  line-height: 1.72;
+  font-family:
+    "Noto Serif SC", "Songti SC", "Microsoft YaHei", "PingFang SC", serif;
+}
+
+.sticky-compose-form textarea::placeholder {
+  color: color-mix(in srgb, var(--muted) 82%, transparent);
+  font-family:
+    "方正瘦金书简体", "FZShouJinShu-S10", "FZShouJinShu-S10S", "STSong",
+    "SimSun", serif;
+  font-size: 14px;
+  line-height: 1.72;
+}
+
+.sticky-compose-form textarea:focus {
+  background: transparent;
 }
 
 .sticky-compose-form .send-button {

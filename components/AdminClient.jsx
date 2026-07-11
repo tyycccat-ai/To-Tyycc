@@ -289,8 +289,6 @@ function StickyAdmin() {
             value={durationHours}
             onChange={(event) => setDurationHours(event.target.value)}
           >
-            <option value="1">1 小时</option>
-            <option value="6">6 小时</option>
             <option value="12">12 小时</option>
             <option value="24">24 小时</option>
             <option value="48">48 小时</option>
@@ -602,7 +600,7 @@ export default function AdminClient() {
               : adminView === "mailbox"
                 ? "这里会收好每一封匿名信。"
                 : adminView === "sticky"
-                  ? "这里管理只给知道口令的人看的碎碎念。"
+                  ? "这里管理Tyycc的碎碎念。"
                   : "选择你要管理的内容。"}
           </p>
         </header>
@@ -753,16 +751,7 @@ export default function AdminClient() {
                   aria-labelledby="deleteConfirmTitle"
                 >
                   <h2 id="deleteConfirmTitle">确认删除这封信吗？</h2>
-                  <p>删除后，公开页和回信记录里都不会再显示它。</p>
                   <div className="admin-confirm-actions">
-                    <button
-                      type="button"
-                      className="text-button confirm-cancel-button"
-                      disabled={busyAction === actionKey(deleteTarget.id, "delete")}
-                      onClick={() => setDeleteTarget(null)}
-                    >
-                      否
-                    </button>
                     <button
                       type="button"
                       className="text-button confirm-delete-button"
@@ -770,6 +759,14 @@ export default function AdminClient() {
                       onClick={() => removeMessage(deleteTarget.id)}
                     >
                       {busyAction === actionKey(deleteTarget.id, "delete") ? "删除中" : "是"}
+                    </button>
+                    <button
+                      type="button"
+                      className="text-button confirm-cancel-button"
+                      disabled={busyAction === actionKey(deleteTarget.id, "delete")}
+                      onClick={() => setDeleteTarget(null)}
+                    >
+                      否
                     </button>
                   </div>
                 </section>
