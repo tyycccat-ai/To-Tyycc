@@ -1293,6 +1293,10 @@ textarea:focus {
 .supplement-section > .supplement-toggle {
   min-height: 30px;
   padding: 0 14px;
+  color: color-mix(in srgb, var(--button-text) 72%, var(--muted));
+  background: color-mix(in srgb, var(--button-bg) 45%, var(--surface-soft) 55%);
+  border-color: color-mix(in srgb, var(--surface-line) 78%, var(--button-bg) 22%);
+  box-shadow: none;
   font-size: 12px;
 }
 
@@ -1313,9 +1317,9 @@ textarea:focus {
 .supplement-editor .reply-confirm-button.is-confirmed:disabled,
 .supplement-section > .supplement-toggle.is-confirmed,
 .supplement-section > .supplement-toggle.is-confirmed:disabled {
-  color: color-mix(in srgb, var(--button-text) 72%, var(--muted));
-  background: color-mix(in srgb, var(--button-bg) 45%, var(--surface-soft) 55%);
-  border-color: color-mix(in srgb, var(--surface-line) 78%, var(--button-bg) 22%);
+  color: var(--muted);
+  background: var(--surface-soft);
+  border-color: var(--surface-line);
   box-shadow: none;
   cursor: default;
 }
@@ -1705,23 +1709,21 @@ textarea:focus {
   min-height: 132px;
   padding: 12px 10px 8px;
   color: var(--text);
-  background: transparent;
-  font-family: inherit;
+  background: var(--surface-strong);
+  font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", sans-serif;
   font-size: 15px;
   line-height: 1.72;
 }
 
 .sticky-compose-form textarea::placeholder {
   color: color-mix(in srgb, var(--muted) 82%, transparent);
-  font-family:
-    "方正瘦金书简体", "FZShouJinShu-S10", "FZShouJinShu-S10S", "STSong",
-    "SimSun", serif;
-  font-size: 14px;
-  line-height: 1.72;
+  font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", sans-serif;
+  font-size: 12px;
+  line-height: 1.7;
 }
 
 .sticky-compose-form textarea:focus {
-  background: transparent;
+  background: var(--surface-strong);
 }
 
 .sticky-compose-form .send-button {
@@ -1865,14 +1867,15 @@ textarea:focus {
   }
 
   .sticky-compose-form textarea {
-    font-family: inherit;
+    font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", sans-serif;
     font-size: 16px;
     line-height: 34px;
     text-size-adjust: none;
   }
 
   .sticky-compose-form textarea::placeholder {
-    font-size: 15px;
+    font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", sans-serif;
+    font-size: 12px;
     line-height: 34px;
   }
 
