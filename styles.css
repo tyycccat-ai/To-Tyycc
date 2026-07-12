@@ -1274,6 +1274,7 @@ textarea:focus {
 }
 
 .reply-actions .reply-confirm-button,
+.sticky-password-form .reply-confirm-button,
 .supplement-editor .reply-confirm-button,
 .supplement-section > .supplement-toggle {
   min-height: 34px;
@@ -1288,6 +1289,7 @@ textarea:focus {
 }
 
 .reply-actions .reply-confirm-button:hover:not(:disabled),
+.sticky-password-form .reply-confirm-button:hover:not(:disabled),
 .supplement-editor .reply-confirm-button:hover:not(:disabled),
 .supplement-section > .supplement-toggle:hover:not(:disabled) {
   border-color: var(--surface-line);
@@ -1297,6 +1299,8 @@ textarea:focus {
 
 .reply-actions .reply-confirm-button.is-confirmed,
 .reply-actions .reply-confirm-button.is-confirmed:disabled,
+.sticky-password-form .reply-confirm-button.is-confirmed,
+.sticky-password-form .reply-confirm-button.is-confirmed:disabled,
 .supplement-editor .reply-confirm-button.is-confirmed,
 .supplement-editor .reply-confirm-button.is-confirmed:disabled,
 .supplement-section > .supplement-toggle.is-confirmed,
