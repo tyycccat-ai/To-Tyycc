@@ -625,7 +625,7 @@ export default function AdminClient() {
               : adminView === "mailbox"
                 ? "这里会收好每一封匿名信。"
                 : adminView === "sticky"
-                  ? "这里管理Tyycc的碎碎念。"
+                  ? "先生成访问密码，这里才会开放。"
                   : "选择你要管理的内容。"}
           </p>
         </header>

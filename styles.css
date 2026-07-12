@@ -957,10 +957,10 @@ textarea:focus {
 
 .message-flags span {
   padding: 3px 6px;
-  border: 1px solid var(--surface-line);
+  border: 1px solid color-mix(in srgb, #fff 88%, var(--surface-line) 12%);
   border-radius: 999px;
   color: var(--subheading);
-  background: var(--surface-soft);
+  background: color-mix(in srgb, #fff 72%, var(--surface-soft) 28%);
   font-size: 11px;
   line-height: 1.35;
 }
@@ -1241,10 +1241,10 @@ textarea:focus {
   align-items: center;
   justify-content: center;
   padding: 0 12px;
-  border: 1px solid var(--surface-line-strong);
+  border: 1px solid color-mix(in srgb, var(--rose) 12%, #fff 88%);
   border-radius: 999px;
-  color: color-mix(in srgb, var(--rose-deep) 72%, var(--text));
-  background: var(--pill-bg);
+  color: color-mix(in srgb, var(--rose-deep) 54%, var(--text-soft));
+  background: color-mix(in srgb, #f7f3f4 72%, var(--pink-50) 28%);
   box-shadow: none;
   line-height: 1;
   transition:
@@ -1255,15 +1255,15 @@ textarea:focus {
 }
 
 .reply-confirm-button:hover:not(:disabled) {
-  border-color: var(--surface-line-strong);
-  background: var(--pill-bg-hover);
+  border-color: color-mix(in srgb, var(--rose) 20%, #fff 80%);
+  background: color-mix(in srgb, #f5eeee 58%, var(--pink-100) 42%);
 }
 
 .reply-confirm-button.is-confirmed,
 .reply-confirm-button.is-confirmed:disabled {
-  color: color-mix(in srgb, var(--subheading) 62%, transparent);
-  background: color-mix(in srgb, var(--pink-100) 62%, transparent);
-  border-color: color-mix(in srgb, var(--rose) 14%, transparent);
+  color: color-mix(in srgb, var(--text-soft) 62%, transparent);
+  background: color-mix(in srgb, #f4eff0 72%, transparent);
+  border-color: color-mix(in srgb, #fff 76%, var(--rose) 24%);
   cursor: default;
 }
 
@@ -1807,6 +1807,18 @@ textarea:focus {
   }
 
   textarea::placeholder {
+    font-size: 15px;
+    line-height: 34px;
+  }
+
+  .sticky-compose-form textarea {
+    font-family: inherit;
+    font-size: 16px;
+    line-height: 34px;
+    text-size-adjust: none;
+  }
+
+  .sticky-compose-form textarea::placeholder {
     font-size: 15px;
     line-height: 34px;
   }
