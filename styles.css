@@ -957,10 +957,10 @@ textarea:focus {
 
 .message-flags span {
   padding: 3px 6px;
-  border: 1px solid color-mix(in srgb, #f4e8c8 72%, var(--surface-line) 28%);
+  border: 1px solid color-mix(in srgb, #fff4d8 48%, var(--surface-line) 52%);
   border-radius: 999px;
   color: var(--subheading);
-  background: color-mix(in srgb, #fffaf0 72%, var(--surface-soft) 28%);
+  background: color-mix(in srgb, #fffdf7 86%, var(--surface-soft) 14%);
   font-size: 11px;
   line-height: 1.35;
 }
@@ -1286,6 +1286,14 @@ textarea:focus {
   font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
   font-size: 13px;
   font-weight: 650;
+}
+
+.reply-actions .reply-confirm-button,
+.supplement-editor .reply-confirm-button,
+.supplement-section > .supplement-toggle {
+  min-height: 30px;
+  padding: 0 14px;
+  font-size: 12px;
 }
 
 .reply-actions .reply-confirm-button:hover:not(:disabled),
