@@ -957,10 +957,10 @@ textarea:focus {
 
 .message-flags span {
   padding: 3px 6px;
-  border: 1px solid color-mix(in srgb, #fff 88%, var(--surface-line) 12%);
+  border: 1px solid color-mix(in srgb, #f4e8c8 72%, var(--surface-line) 28%);
   border-radius: 999px;
   color: var(--subheading);
-  background: color-mix(in srgb, #fff 72%, var(--surface-soft) 28%);
+  background: color-mix(in srgb, #fffaf0 72%, var(--surface-soft) 28%);
   font-size: 11px;
   line-height: 1.35;
 }
@@ -1027,10 +1027,14 @@ textarea:focus {
 .supplement-item {
   display: grid;
   gap: 8px;
-  padding: 11px 12px;
+  padding: 10px 12px;
   border: 1px solid var(--surface-line);
   border-radius: 8px;
   background: var(--surface-soft);
+  color: var(--text);
+  font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+  font-size: 13px;
+  line-height: 1.7;
 }
 
 .supplement-meta {
@@ -1039,19 +1043,21 @@ textarea:focus {
   justify-content: space-between;
   gap: 10px;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
+  line-height: 1.45;
 }
 
 .supplement-meta span {
-  color: var(--rose-deep);
-  font-weight: 700;
+  color: var(--muted);
+  font-weight: 400;
 }
 
 .supplement-item p {
   margin: 0;
-  color: var(--text-soft);
+  color: var(--text);
+  font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
   font-size: 13px;
-  line-height: 1.75;
+  line-height: 1.7;
   white-space: pre-wrap;
 }
 
@@ -1264,6 +1270,41 @@ textarea:focus {
   color: color-mix(in srgb, var(--text-soft) 62%, transparent);
   background: color-mix(in srgb, #f4eff0 72%, transparent);
   border-color: color-mix(in srgb, #fff 76%, var(--rose) 24%);
+  cursor: default;
+}
+
+.reply-actions .reply-confirm-button,
+.supplement-editor .reply-confirm-button,
+.supplement-section > .supplement-toggle {
+  min-height: 34px;
+  padding: 0 18px;
+  border-color: var(--surface-line);
+  color: var(--button-text);
+  background: var(--button-bg);
+  box-shadow: var(--button-shadow);
+  font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.reply-actions .reply-confirm-button:hover:not(:disabled),
+.supplement-editor .reply-confirm-button:hover:not(:disabled),
+.supplement-section > .supplement-toggle:hover:not(:disabled) {
+  border-color: var(--surface-line);
+  background: var(--button-bg-hover);
+  box-shadow: var(--button-shadow-hover);
+}
+
+.reply-actions .reply-confirm-button.is-confirmed,
+.reply-actions .reply-confirm-button.is-confirmed:disabled,
+.supplement-editor .reply-confirm-button.is-confirmed,
+.supplement-editor .reply-confirm-button.is-confirmed:disabled,
+.supplement-section > .supplement-toggle.is-confirmed,
+.supplement-section > .supplement-toggle.is-confirmed:disabled {
+  color: color-mix(in srgb, var(--button-text) 72%, var(--muted));
+  background: color-mix(in srgb, var(--button-bg) 45%, var(--surface-soft) 55%);
+  border-color: color-mix(in srgb, var(--surface-line) 78%, var(--button-bg) 22%);
+  box-shadow: none;
   cursor: default;
 }
 
