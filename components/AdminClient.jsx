@@ -170,6 +170,7 @@ function StickyAdmin() {
   const [busyAction, setBusyAction] = useState("");
   const [editingId, setEditingId] = useState("");
   const [editContent, setEditContent] = useState("");
+  const [stickyDeleteTarget, setStickyDeleteTarget] = useState(null);
 
   useEffect(() => {
     loadStickyNotes();
@@ -271,6 +272,7 @@ function StickyAdmin() {
       return;
     }
     setNotes((current) => current.filter((item) => String(item.id) !== String(id)));
+    setStickyDeleteTarget(null);
   }
 
   return (
@@ -385,7 +387,7 @@ function StickyAdmin() {
                         type="button"
                         className="text-button danger-button"
                         disabled={busy}
-                        onClick={() => removeSticky(item.id)}
+                        onClick={() => setStickyDeleteTarget(item)}
                       >
                         {busyAction === `delete:${item.id}` ? "删除中" : "删除"}
                       </button>
@@ -399,6 +401,36 @@ function StickyAdmin() {
           <p className="empty-state">还没有便利贴。</p>
         )}
       </div>
+      {stickyDeleteTarget ? (
+        <div className="admin-confirm-backdrop" role="presentation">
+          <section
+            className="admin-confirm-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="stickyDeleteConfirmTitle"
+          >
+            <h2 id="stickyDeleteConfirmTitle">是否确认删除该便利贴？</h2>
+            <div className="admin-confirm-actions">
+              <button
+                type="button"
+                className="text-button confirm-delete-button"
+                disabled={busyAction === `delete:${stickyDeleteTarget.id}`}
+                onClick={() => removeSticky(stickyDeleteTarget.id)}
+              >
+                {busyAction === `delete:${stickyDeleteTarget.id}` ? "删除中" : "是"}
+              </button>
+              <button
+                type="button"
+                className="text-button confirm-cancel-button"
+                disabled={busyAction === `delete:${stickyDeleteTarget.id}`}
+                onClick={() => setStickyDeleteTarget(null)}
+              >
+                否
+              </button>
+            </div>
+          </section>
+        </div>
+      ) : null}
     </section>
   );
 }
@@ -632,11 +664,10 @@ export default function AdminClient() {
           </section>
         ) : adminView === "sticky" ? (
           <section className="admin-board" aria-label="便利贴管理">
-            <div className="board-toolbar">
+            <div className="board-toolbar board-toolbar-return">
               <button type="button" className="text-button" onClick={() => setAdminView("menu")}>
                 返回管理页面
               </button>
-              <button type="button" className="text-button" onClick={logout}>退出</button>
             </div>
             <StickyAdmin />
           </section>
@@ -647,7 +678,6 @@ export default function AdminClient() {
               <button type="button" className="text-button" onClick={() => setAdminView("menu")}>
                 返回管理页面
               </button>
-              <button type="button" className="text-button" onClick={logout}>退出</button>
             </div>
             <p className={`form-note ${note ? "show" : ""}`} aria-live="polite">{note}</p>
             <div className="message-list">
