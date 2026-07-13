@@ -1711,14 +1711,14 @@ textarea:focus {
   color: var(--text);
   background: var(--surface-strong);
   font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", sans-serif;
-  font-size: 15px;
+  font-size: 13px;
   line-height: 1.72;
 }
 
 .sticky-compose-form textarea::placeholder {
   color: color-mix(in srgb, var(--muted) 82%, transparent);
   font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", sans-serif;
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.7;
 }
 
@@ -1868,14 +1868,14 @@ textarea:focus {
 
   .sticky-compose-form textarea {
     font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", sans-serif;
-    font-size: 16px;
+    font-size: 13px;
     line-height: 34px;
     text-size-adjust: none;
   }
 
   .sticky-compose-form textarea::placeholder {
     font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", sans-serif;
-    font-size: 12px;
+    font-size: 13px;
     line-height: 34px;
   }
 
