@@ -1869,14 +1869,14 @@ textarea:focus {
   .sticky-compose-form textarea {
     font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", sans-serif;
     font-size: 13px;
-    line-height: 34px;
+    line-height: 1.72;
     text-size-adjust: none;
   }
 
   .sticky-compose-form textarea::placeholder {
     font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", sans-serif;
     font-size: 13px;
-    line-height: 34px;
+    line-height: 1.72;
   }
 
   textarea:focus {
