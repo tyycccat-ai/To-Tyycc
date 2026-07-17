@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
 async function requestJson(url, options = {}) {
@@ -101,7 +102,7 @@ export default function TotClient() {
     <main className="page-shell tot-shell" aria-labelledby="totTitle">
       <section className="panel-page tot-panel">
         <header className="panel-header tot-header">
-          <a className="soft-link panel-back" href="/">回到信箱</a>
+          <Link className="soft-link panel-back" href="/" prefetch>回到信箱</Link>
           <h1 id="totTitle">ToT 便利贴</h1>
           {authorized ? <p>这里收着一些临时冒出来的话。</p> : null}
         </header>

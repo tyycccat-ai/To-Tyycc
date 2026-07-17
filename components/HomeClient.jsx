@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { PublicMessageCard } from "./MessageCard";
 
@@ -68,6 +70,7 @@ function markReplyAsRead(letter) {
 }
 
 export default function HomeClient({ initialMessages }) {
+  const router = useRouter();
   const [message, setMessage] = useState("");
   const [nickname, setNickname] = useState("");
   const [allowPublic, setAllowPublic] = useState(false);
@@ -248,14 +251,14 @@ export default function HomeClient({ initialMessages }) {
     const params = new URLSearchParams();
     params.set("id", replyLetter.id);
     if (replyLetter.receiptToken) params.set("token", replyLetter.receiptToken);
-    window.location.href = `/reply?${params.toString()}`;
+    router.push(`/reply?${params.toString()}`);
   }
 
   return (
     <main className="page-shell" aria-labelledby="site-title">
-      <a className="home-sticky-link" href="/tot" aria-label="进入 ToT 便利贴">
+      <Link className="home-sticky-link" href="/tot" prefetch aria-label="进入 ToT 便利贴">
         ToT 便利贴
-      </a>
+      </Link>
       <section className="hero" aria-label="T o T 匿名留言箱首页">
         <img className="avatar" src="/assets/avatar.jpg" alt="Tyycc 的头像" />
 
@@ -327,7 +330,7 @@ export default function HomeClient({ initialMessages }) {
       <section className="home-public" aria-labelledby="homePublicTitle">
         <div className="home-public-heading">
           <h2 id="homePublicTitle">公开的信</h2>
-          <a className="soft-link" href="/public">全部</a>
+          <Link className="soft-link" href="/public" prefetch>全部</Link>
         </div>
         <div className="message-list" aria-live="polite">
           {homeMessages.length ? (

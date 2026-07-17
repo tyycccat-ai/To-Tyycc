@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { PublicMessageCard, formatIsoDate, formatTime } from "./MessageCard";
 
@@ -105,7 +106,7 @@ export default function PublicClient({ initialMessages }) {
     <main className="page-shell public-shell" aria-labelledby="publicTitle">
       <section className="panel-page">
         <header className="panel-header">
-          <a className="soft-link panel-back" href="/">回到信箱</a>
+          <Link className="soft-link panel-back" href="/" prefetch>回到信箱</Link>
           <div className="mascot small-mascot" aria-hidden="true">T o T</div>
           <h1 id="publicTitle">公开的信</h1>
           <p>这些话已经被允许轻轻放在这里。</p>

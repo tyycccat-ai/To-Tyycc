@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 const letterReceiptKey = "totLetterReceipts";
@@ -119,7 +120,7 @@ export default function ReplyClient() {
   return (
     <main className="page-shell reply-shell" aria-labelledby="replyTitle">
       <section className="reply-page">
-        <a className="soft-link panel-back" href="/">回到信箱</a>
+        <Link className="soft-link panel-back" href="/" prefetch>回到信箱</Link>
 
         <article className="letter-paper" aria-live="polite">
           {letter?.reply ? (

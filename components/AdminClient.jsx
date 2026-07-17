@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { formatTime } from "./MessageCard";
 
@@ -609,7 +610,7 @@ export default function AdminClient() {
     <main className="page-shell admin-shell" aria-labelledby="adminTitle">
       <section className="panel-page">
         <header className="panel-header">
-          <a className="soft-link panel-back" href="/">返回匿名信箱</a>
+          <Link className="soft-link panel-back" href="/" prefetch>返回匿名信箱</Link>
           <h1 id="adminTitle">
             {!authorized
               ? "Tyycc 的信箱"
