@@ -105,8 +105,11 @@ export function generateStickyPassword() {
   return `ToT-${chars.slice(0, 4).join("")}-${chars.slice(4).join("")}`;
 }
 
-export async function createStickyPasswordSetting(durationHours = DEFAULT_STICKY_PASSWORD_HOURS) {
-  const password = generateStickyPassword();
+export async function createStickyPasswordSetting(
+  durationHours = DEFAULT_STICKY_PASSWORD_HOURS,
+  customPassword = ""
+) {
+  const password = String(customPassword || "").trim() || generateStickyPassword();
   const hours = stickyPasswordDurationHours(durationHours);
   const now = Date.now();
   return {

@@ -12,8 +12,9 @@ export async function PATCH(request) {
     }
     const data = await request.json();
     const durationHours = stickyPasswordDurationHours(data.durationHours);
+    const customPassword = String(data.password || "").trim().slice(0, 64);
 
-    const setting = await generateAndSaveStickyPassword(durationHours);
+    const setting = await generateAndSaveStickyPassword(durationHours, customPassword);
     return NextResponse.json({
       ok: true,
       passwordSet: true,

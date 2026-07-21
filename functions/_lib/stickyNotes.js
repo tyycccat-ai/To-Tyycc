@@ -109,9 +109,10 @@ export async function saveStickyPasswordSetting(env, value) {
 
 export async function generateAndSaveStickyPassword(
   env,
-  durationHours = DEFAULT_STICKY_PASSWORD_HOURS
+  durationHours = DEFAULT_STICKY_PASSWORD_HOURS,
+  customPassword = ""
 ) {
-  const setting = await createStickyPasswordSetting(durationHours);
+  const setting = await createStickyPasswordSetting(durationHours, customPassword);
   await saveStickyPasswordSetting(env, setting);
   return setting;
 }
