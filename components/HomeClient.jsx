@@ -256,9 +256,9 @@ export default function HomeClient({ initialMessages }) {
 
   return (
     <main className="page-shell" aria-labelledby="site-title">
-      <Link className="home-sticky-link" href="/tot" prefetch aria-label="进入 ToT 便利贴">
+      <a className="home-sticky-link" href="/tot" aria-label="进入 ToT 便利贴">
         ToT 便利贴
-      </Link>
+      </a>
       <section className="hero" aria-label="T o T 匿名留言箱首页">
         <img className="avatar" src="/assets/avatar.jpg" alt="Tyycc 的头像" />
 
