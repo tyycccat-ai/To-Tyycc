@@ -645,7 +645,7 @@ export default function AdminClient() {
   }
 
   return (
-    <main className="page-shell admin-shell" aria-labelledby="adminTitle">
+    <main className={`page-shell admin-shell${!authorized ? " admin-shell-login" : ""}`} aria-labelledby="adminTitle">
       <section className="panel-page">
         <header className="panel-header">
           <Link className="soft-link panel-back" href="/" prefetch>返回匿名信箱</Link>
