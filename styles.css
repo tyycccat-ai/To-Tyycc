@@ -1676,9 +1676,9 @@ textarea:focus {
   grid-template-columns: minmax(84px, 0.34fr) minmax(150px, 0.66fr) auto;
   align-items: end;
   width: min(100%, 640px);
-  border-color: color-mix(in srgb, #fce6f2 72%, var(--surface-line) 28%);
-  background: #fce6f2;
-  box-shadow: 0 10px 28px color-mix(in srgb, #fce6f2 42%, transparent);
+  border-color: color-mix(in srgb, #ffe2e5 58%, var(--surface-line) 42%);
+  background: #fff0f1;
+  box-shadow: 0 10px 28px color-mix(in srgb, #ffdfe4 24%, transparent);
 }
 
 .sticky-password-form select {
@@ -1707,10 +1707,10 @@ textarea:focus {
 
 .sticky-password-actions {
   display: flex;
-  width: min(100%, 292px);
+  width: min(100%, 250px);
   min-width: 0;
-  justify-content: space-between;
-  gap: 20px;
+  justify-content: center;
+  gap: 16px;
 }
 
 .sticky-password-actions .reply-confirm-button {
@@ -1923,10 +1923,10 @@ textarea:focus {
 
   .sticky-password-actions {
     display: flex;
-    width: min(100%, 320px);
+    width: min(100%, 268px);
     min-width: 0;
-    justify-content: space-between;
-    gap: 18px;
+    justify-content: center;
+    gap: 16px;
   }
 
   .sticky-password-actions .reply-confirm-button {
@@ -1997,7 +1997,7 @@ textarea:focus {
 @media (max-width: 380px) {
   .sticky-password-actions {
     gap: 12px;
-    width: 100%;
+    width: min(100%, 252px);
   }
 
   .sticky-password-actions .reply-confirm-button {
