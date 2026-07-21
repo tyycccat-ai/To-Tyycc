@@ -1676,7 +1676,6 @@ textarea:focus {
   width: min(100%, 640px);
 }
 
-.sticky-password-form input,
 .sticky-password-form select {
   height: 34px;
   padding: 0 26px 0 9px;
@@ -1686,19 +1685,33 @@ textarea:focus {
 }
 
 .sticky-password-form input {
+  height: 34px;
+  padding: 0 9px;
+  font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", sans-serif;
+  font-size: 13px;
+  line-height: 34px;
   padding-right: 9px;
 }
 
 .sticky-password-form input::placeholder {
-  color: var(--muted);
-  font: inherit;
+  color: color-mix(in srgb, var(--muted) 82%, transparent);
+  font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", sans-serif;
+  font-size: 13px;
+  line-height: 34px;
 }
 
 .sticky-password-actions {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  min-width: 252px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
-  justify-content: flex-end;
+}
+
+.sticky-password-actions .reply-confirm-button {
+  width: 100%;
+  min-width: 0;
+  padding-inline: 10px;
+  white-space: nowrap;
 }
 
 .sticky-password-card {
@@ -1884,7 +1897,8 @@ textarea:focus {
 
   .sticky-password-actions {
     display: grid;
-    grid-template-columns: 1fr;
+    min-width: 0;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .sticky-password-actions .reply-confirm-button {
@@ -1933,10 +1947,15 @@ textarea:focus {
   .nickname input,
   .admin-login input,
   .sticky-login-note input,
-  .sticky-password-form input,
   .sticky-compose-form input,
   .sticky-admin-item input {
     font-size: 16px;
+  }
+
+  .sticky-password-form input,
+  .sticky-password-form input::placeholder {
+    font-size: 13px;
+    line-height: 34px;
   }
 
   .sticky-password-form select {
@@ -1944,6 +1963,17 @@ textarea:focus {
     padding-right: 26px;
     font-size: 12px;
     line-height: 34px;
+  }
+}
+
+@media (max-width: 380px) {
+  .sticky-password-actions {
+    gap: 6px;
+  }
+
+  .sticky-password-actions .reply-confirm-button {
+    padding-inline: 7px;
+    font-size: 11px;
   }
 }
 
