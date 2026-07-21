@@ -1716,18 +1716,26 @@ textarea:focus {
   width: auto;
   min-width: 0;
   min-height: 32px;
-  padding-inline: 16px;
-  border-color: color-mix(in srgb, var(--rose-deep) 18%, var(--surface-line));
-  color: var(--choice-text);
-  background: color-mix(in srgb, var(--surface-float) 84%, var(--pink-50) 16%);
+  padding-inline: 14px;
+  border-color: color-mix(in srgb, #eadbb8 56%, var(--surface-line) 44%);
+  color: color-mix(in srgb, var(--subheading) 82%, #8c7a56 18%);
+  background: color-mix(in srgb, #fffaf0 88%, var(--surface-float) 12%);
   box-shadow: none;
   font-size: 12px;
   white-space: nowrap;
 }
 
+.sticky-password-actions .reply-confirm-button:first-child {
+  min-width: 96px;
+}
+
+.sticky-password-actions .reply-confirm-button:last-child {
+  min-width: 118px;
+}
+
 .sticky-password-actions .reply-confirm-button:hover:not(:disabled) {
-  border-color: color-mix(in srgb, var(--rose-deep) 28%, var(--surface-line));
-  background: color-mix(in srgb, var(--surface-float) 76%, var(--pink-50) 24%);
+  border-color: color-mix(in srgb, #e2cf9f 66%, var(--surface-line) 34%);
+  background: color-mix(in srgb, #fff5df 90%, var(--surface-float) 10%);
   box-shadow: none;
 }
 
@@ -1921,8 +1929,7 @@ textarea:focus {
 
   .sticky-password-actions .reply-confirm-button {
     flex: 0 1 auto;
-    min-width: min(38vw, 136px);
-    padding-inline: 12px;
+    padding-inline: 10px;
   }
 
   .sticky-compose-form .send-button {
@@ -1972,15 +1979,15 @@ textarea:focus {
   }
 
   .sticky-password-form input,
+  .sticky-password-form select,
   .sticky-password-form input::placeholder {
-    font-size: 12px;
+    font-size: 16px;
     line-height: 34px;
   }
 
   .sticky-password-form select {
     height: 34px;
     padding-right: 26px;
-    font-size: 12px;
     line-height: 34px;
   }
 }
@@ -1991,7 +1998,7 @@ textarea:focus {
   }
 
   .sticky-password-actions .reply-confirm-button {
-    min-width: min(40vw, 128px);
+    min-width: 0;
     padding-inline: 8px;
     font-size: 11.5px;
   }
