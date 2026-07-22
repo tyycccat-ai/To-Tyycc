@@ -1676,9 +1676,9 @@ textarea:focus {
   grid-template-columns: minmax(84px, 0.34fr) minmax(150px, 0.66fr) auto;
   align-items: end;
   width: min(100%, 640px);
-  border-color: color-mix(in srgb, #eee9ea 68%, var(--surface-line) 32%);
-  background: #f8f6f6;
-  box-shadow: 0 10px 28px color-mix(in srgb, #eee9ea 34%, transparent);
+  border-color: var(--surface-line);
+  background: var(--surface-soft);
+  box-shadow: none;
 }
 
 .sticky-password-form select {
@@ -1709,8 +1709,10 @@ textarea:focus {
   display: flex;
   width: min(100%, 250px);
   min-width: 0;
+  justify-self: center;
   justify-content: center;
   gap: 16px;
+  margin-inline: auto;
 }
 
 .sticky-password-actions .reply-confirm-button {
