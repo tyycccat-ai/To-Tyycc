@@ -292,6 +292,10 @@ function StickyAdmin() {
   return (
     <section className="sticky-admin-panel" aria-label="ToT 便利贴管理">
       <form className="sticky-password-form" onSubmit={saveCustomPassword}>
+        <div className="sticky-password-header">
+          <span className="sticky-password-header-icon" aria-hidden="true" />
+          <span>发布设置</span>
+        </div>
         <label>
           <span>有效时间</span>
           <select
@@ -319,7 +323,7 @@ function StickyAdmin() {
         <div className="sticky-password-actions">
           <button
             type="button"
-            className="text-button reply-confirm-button"
+            className="text-button reply-confirm-button sticky-password-random-button"
             disabled={Boolean(busyAction)}
             onClick={generatePassword}
           >
@@ -327,7 +331,7 @@ function StickyAdmin() {
           </button>
           <button
             type="submit"
-            className="text-button reply-confirm-button"
+            className="text-button reply-confirm-button sticky-password-save-button"
             disabled={Boolean(busyAction) || !customPassword.trim()}
           >
             {busyAction === "custom-password" ? "保存中" : "保存自设密码"}

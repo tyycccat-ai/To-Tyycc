@@ -1676,9 +1676,44 @@ textarea:focus {
   grid-template-columns: minmax(84px, 0.34fr) minmax(150px, 0.66fr) auto;
   align-items: end;
   width: min(100%, 640px);
-  border-color: color-mix(in srgb, #eadbb8 46%, var(--surface-line) 54%);
-  background: color-mix(in srgb, #fffaf0 70%, var(--surface-soft) 30%);
-  box-shadow: 0 10px 26px color-mix(in srgb, #eadbb8 14%, transparent);
+  gap: 14px;
+  padding: 0 16px 16px;
+  overflow: hidden;
+  border-color: color-mix(in srgb, var(--rose) 18%, var(--surface-line) 82%);
+  background: var(--surface-float);
+  box-shadow: 0 14px 28px color-mix(in srgb, var(--rose) 8%, transparent);
+}
+
+.sticky-password-header {
+  display: inline-flex;
+  grid-column: 1 / -1;
+  gap: 10px;
+  align-items: center;
+  margin: 0 -16px 4px;
+  padding: 14px 16px;
+  border-bottom: 1px solid color-mix(in srgb, var(--rose) 12%, var(--surface-line) 88%);
+  color: var(--subheading);
+  background: color-mix(in srgb, var(--pink-50) 80%, var(--surface-float) 20%);
+  font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+  font-size: 14px;
+  font-weight: 750;
+  line-height: 1;
+}
+
+.sticky-password-header-icon {
+  position: relative;
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, var(--surface-float) 0 3px, transparent 3.5px),
+    repeating-conic-gradient(
+      from 0deg,
+      var(--rose) 0deg 18deg,
+      transparent 18deg 36deg
+    );
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--rose) 72%, transparent);
 }
 
 .sticky-password-form select {
@@ -1718,30 +1753,55 @@ textarea:focus {
 
 .sticky-password-actions .reply-confirm-button {
   justify-self: center;
-  width: 124px;
-  min-width: 124px;
-  min-height: 32px;
+  width: 128px;
+  min-width: 128px;
+  min-height: 34px;
+  gap: 8px;
   padding-inline: 0;
-  border-color: var(--surface-line);
-  color: var(--button-text);
-  background: var(--button-bg);
-  box-shadow: var(--button-shadow);
+  border-color: color-mix(in srgb, var(--rose) 40%, var(--surface-line) 60%);
+  color: var(--rose-deep);
+  background: color-mix(in srgb, var(--surface-float) 88%, var(--pink-50) 12%);
+  box-shadow: 0 8px 18px color-mix(in srgb, var(--rose) 8%, transparent);
   font-size: 12.5px;
   white-space: nowrap;
 }
 
 .sticky-password-actions .reply-confirm-button:first-child {
-  min-width: 124px;
+  min-width: 128px;
 }
 
 .sticky-password-actions .reply-confirm-button:last-child {
-  min-width: 124px;
+  min-width: 128px;
+}
+
+.sticky-password-actions .reply-confirm-button::before {
+  display: inline-flex;
+  width: 14px;
+  height: 14px;
+  align-items: center;
+  justify-content: center;
+  color: var(--rose);
+  font-size: 14px;
+  line-height: 1;
+}
+
+.sticky-password-random-button::before {
+  content: "↻";
+}
+
+.sticky-password-save-button::before {
+  content: "";
+  width: 11px;
+  height: 9px;
+  border: 2px solid var(--rose);
+  border-radius: 3px;
+  box-shadow: 0 -5px 0 -2px var(--surface-float), 0 -6px 0 -2px var(--rose);
 }
 
 .sticky-password-actions .reply-confirm-button:hover:not(:disabled) {
-  border-color: var(--surface-line);
-  background: var(--button-bg-hover);
-  box-shadow: var(--button-shadow-hover);
+  border-color: color-mix(in srgb, var(--rose) 52%, var(--surface-line) 48%);
+  background: color-mix(in srgb, var(--pink-50) 54%, var(--surface-float) 46%);
+  box-shadow: 0 10px 22px color-mix(in srgb, var(--rose) 13%, transparent);
 }
 
 .sticky-password-card {
