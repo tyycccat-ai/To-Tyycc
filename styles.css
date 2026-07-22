@@ -1675,61 +1675,44 @@ textarea:focus {
 .sticky-password-form {
   grid-template-columns: minmax(84px, 0.34fr) minmax(150px, 0.66fr) auto;
   align-items: end;
-  width: min(100%, 640px);
-  gap: 14px;
-  padding: 0 16px 16px;
+  width: min(100%, 560px);
+  gap: 10px 12px;
+  padding: 0 14px 14px;
   overflow: hidden;
   border-color: color-mix(in srgb, var(--rose) 18%, var(--surface-line) 82%);
   background: var(--surface-float);
-  box-shadow: 0 14px 28px color-mix(in srgb, var(--rose) 8%, transparent);
+  box-shadow: 0 10px 22px color-mix(in srgb, var(--rose) 6%, transparent);
 }
 
 .sticky-password-header {
   display: inline-flex;
   grid-column: 1 / -1;
-  gap: 10px;
   align-items: center;
-  margin: 0 -16px 4px;
-  padding: 14px 16px;
+  margin: 0 -14px 2px;
+  padding: 11px 14px;
   border-bottom: 1px solid color-mix(in srgb, var(--rose) 12%, var(--surface-line) 88%);
   color: var(--subheading);
   background: color-mix(in srgb, var(--pink-50) 80%, var(--surface-float) 20%);
   font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
-  font-size: 14px;
-  font-weight: 750;
+  font-size: 13px;
+  font-weight: 650;
   line-height: 1;
 }
 
-.sticky-password-header-icon {
-  position: relative;
-  flex: 0 0 auto;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle, var(--surface-float) 0 3px, transparent 3.5px),
-    repeating-conic-gradient(
-      from 0deg,
-      var(--rose) 0deg 18deg,
-      transparent 18deg 36deg
-    );
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--rose) 72%, transparent);
-}
-
 .sticky-password-form select {
-  height: 34px;
+  height: 32px;
   padding: 0 26px 0 9px;
   font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", sans-serif;
   font-size: 12px;
-  line-height: 34px;
+  line-height: 32px;
 }
 
 .sticky-password-form input {
-  height: 34px;
+  height: 32px;
   padding: 0 9px;
   font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", sans-serif;
   font-size: 12px;
-  line-height: 34px;
+  line-height: 32px;
   padding-right: 9px;
 }
 
@@ -1737,7 +1720,7 @@ textarea:focus {
   color: color-mix(in srgb, var(--muted) 82%, transparent);
   font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", sans-serif;
   font-size: 12px;
-  line-height: 34px;
+  line-height: 32px;
 }
 
 .sticky-password-actions {
@@ -1753,10 +1736,9 @@ textarea:focus {
 
 .sticky-password-actions .reply-confirm-button {
   justify-self: center;
-  width: 128px;
-  min-width: 128px;
-  min-height: 34px;
-  gap: 8px;
+  width: 118px;
+  min-width: 118px;
+  min-height: 31px;
   padding-inline: 0;
   border-color: color-mix(in srgb, var(--rose) 40%, var(--surface-line) 60%);
   color: var(--rose-deep);
@@ -1767,35 +1749,11 @@ textarea:focus {
 }
 
 .sticky-password-actions .reply-confirm-button:first-child {
-  min-width: 128px;
+  min-width: 118px;
 }
 
 .sticky-password-actions .reply-confirm-button:last-child {
-  min-width: 128px;
-}
-
-.sticky-password-actions .reply-confirm-button::before {
-  display: inline-flex;
-  width: 14px;
-  height: 14px;
-  align-items: center;
-  justify-content: center;
-  color: var(--rose);
-  font-size: 14px;
-  line-height: 1;
-}
-
-.sticky-password-random-button::before {
-  content: "↻";
-}
-
-.sticky-password-save-button::before {
-  content: "";
-  width: 11px;
-  height: 9px;
-  border: 2px solid var(--rose);
-  border-radius: 3px;
-  box-shadow: 0 -5px 0 -2px var(--surface-float), 0 -6px 0 -2px var(--rose);
+  min-width: 118px;
 }
 
 .sticky-password-actions .reply-confirm-button:hover:not(:disabled) {
@@ -1994,8 +1952,8 @@ textarea:focus {
   }
 
   .sticky-password-actions .reply-confirm-button {
-    width: 120px;
-    min-width: 120px;
+    width: 112px;
+    min-width: 112px;
     padding-inline: 0;
   }
 
@@ -2049,13 +2007,13 @@ textarea:focus {
   .sticky-password-form select,
   .sticky-password-form input::placeholder {
     font-size: 12px;
-    line-height: 34px;
+    line-height: 32px;
   }
 
   .sticky-password-form select {
-    height: 34px;
+    height: 32px;
     padding-right: 26px;
-    line-height: 34px;
+    line-height: 32px;
   }
 }
 
@@ -2066,8 +2024,8 @@ textarea:focus {
   }
 
   .sticky-password-actions .reply-confirm-button {
-    width: 112px;
-    min-width: 112px;
+    width: 104px;
+    min-width: 104px;
     padding-inline: 8px;
     font-size: 11.5px;
   }
