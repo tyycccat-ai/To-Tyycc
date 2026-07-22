@@ -1645,7 +1645,8 @@ textarea:focus {
 
 .sticky-admin-panel {
   display: grid;
-  gap: 16px;
+  justify-items: center;
+  gap: 18px;
   margin-top: 20px;
   padding-top: 20px;
   border-top: 1px dashed var(--surface-line-strong);
@@ -1673,30 +1674,28 @@ textarea:focus {
 }
 
 .sticky-password-form {
-  grid-template-columns: minmax(84px, 0.34fr) minmax(150px, 0.66fr) auto;
-  align-items: end;
-  width: min(100%, 560px);
-  gap: 10px 12px;
-  padding: 0 14px 14px;
-  overflow: hidden;
-  border-color: color-mix(in srgb, var(--rose) 18%, var(--surface-line) 82%);
-  background: var(--surface-float);
-  box-shadow: 0 10px 22px color-mix(in srgb, var(--rose) 6%, transparent);
+  grid-template-columns: minmax(0, 1fr);
+  width: min(100%, 460px);
+  gap: 14px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
-.sticky-password-header {
-  display: inline-flex;
-  grid-column: 1 / -1;
-  align-items: center;
-  margin: 0 -14px 2px;
-  padding: 11px 14px;
-  border-bottom: 1px solid color-mix(in srgb, var(--rose) 12%, var(--surface-line) 88%);
-  color: var(--subheading);
-  background: color-mix(in srgb, var(--pink-50) 80%, var(--surface-float) 20%);
-  font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+.sticky-password-form label {
+  grid-template-columns: 1fr;
+  gap: 8px;
   font-size: 13px;
-  font-weight: 650;
-  line-height: 1;
+}
+
+.sticky-duration-row {
+  grid-template-columns: 1fr minmax(130px, 0.34fr) !important;
+  align-items: center;
+}
+
+.sticky-duration-row span {
+  align-self: center;
 }
 
 .sticky-password-form select {
@@ -1730,8 +1729,8 @@ textarea:focus {
   width: 100%;
   min-width: 0;
   justify-self: stretch;
-  column-gap: 24px;
-  margin: 2px 0 0;
+  column-gap: 22px;
+  margin: -2px 0 0;
 }
 
 .sticky-password-actions .reply-confirm-button {
@@ -1764,6 +1763,7 @@ textarea:focus {
 
 .sticky-password-card {
   display: grid;
+  width: min(100%, 460px);
   gap: 6px;
   padding: 16px;
   border: 1px solid color-mix(in srgb, var(--rose) 14%, var(--surface-line));
@@ -1787,6 +1787,112 @@ textarea:focus {
   overflow-wrap: anywhere;
 }
 
+.sticky-compose-form {
+  position: relative;
+  width: min(100%, 520px);
+  min-height: 430px;
+  gap: 0;
+  padding: 42px 34px 28px;
+  overflow: visible;
+  border: 1px solid color-mix(in srgb, var(--rose) 8%, var(--surface-line) 92%);
+  border-radius: 8px 8px 36px 8px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.74), rgba(255, 252, 248, 0.88)),
+    color-mix(in srgb, #fffdf8 78%, var(--surface-float) 22%);
+  box-shadow:
+    0 24px 44px color-mix(in srgb, var(--rose) 14%, transparent),
+    0 4px 12px rgba(157, 93, 110, 0.06);
+}
+
+.sticky-compose-form::before {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  top: -18px;
+  left: 50%;
+  width: 118px;
+  height: 34px;
+  border-radius: 2px;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.18) 0 2px,
+      transparent 2px 7px
+    ),
+    color-mix(in srgb, var(--button-bg) 84%, var(--surface-float) 16%);
+  box-shadow: 0 8px 18px color-mix(in srgb, var(--rose) 18%, transparent);
+  opacity: 0.84;
+  transform: translateX(-50%) rotate(1deg);
+}
+
+.sticky-compose-form::after {
+  content: "";
+  position: absolute;
+  right: -1px;
+  bottom: -1px;
+  width: 52px;
+  height: 52px;
+  border-radius: 0 0 34px 0;
+  background:
+    linear-gradient(135deg, transparent 0 49%, rgba(216, 177, 124, 0.18) 50%),
+    linear-gradient(135deg, rgba(255, 253, 246, 0) 0 51%, rgba(238, 215, 177, 0.58) 52% 100%);
+  box-shadow: -9px -9px 20px rgba(183, 119, 137, 0.08);
+  pointer-events: none;
+}
+
+.sticky-compose-tape {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 12px;
+  pointer-events: none;
+}
+
+.sticky-compose-tape::before {
+  content: "";
+  position: absolute;
+  top: 8px;
+  left: 22px;
+  right: 22px;
+  height: 8px;
+  opacity: 0.32;
+  background-image: radial-gradient(circle, color-mix(in srgb, var(--muted) 34%, transparent) 1px, transparent 1.5px);
+  background-size: 24px 8px;
+}
+
+.sticky-compose-meta {
+  display: flex;
+  min-height: 62px;
+  align-items: start;
+  justify-content: space-between;
+  gap: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid color-mix(in srgb, var(--surface-line) 72%, transparent);
+  color: var(--muted);
+  font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", sans-serif;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.sticky-compose-meta-item {
+  display: grid;
+  gap: 2px;
+  text-align: left;
+}
+
+.sticky-compose-meta-item time,
+.sticky-compose-meta-place {
+  color: var(--text-soft);
+}
+
+.sticky-compose-meta-place {
+  justify-items: end;
+  padding-top: 10px;
+}
+
+.sticky-compose-field {
+  min-height: 260px;
+}
+
 .sticky-compose-form textarea,
 .sticky-admin-item textarea {
   min-height: 94px;
@@ -1800,13 +1906,15 @@ textarea:focus {
 }
 
 .sticky-compose-form textarea {
-  min-height: 132px;
-  padding: 12px 10px 8px;
+  min-height: 260px;
+  padding: 24px 0 8px;
+  border: 0;
   color: var(--text);
-  background: var(--surface-strong);
+  background: transparent;
   font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", sans-serif;
   font-size: 13px;
   line-height: 1.72;
+  resize: vertical;
 }
 
 .sticky-compose-form textarea::placeholder {
@@ -1817,19 +1925,25 @@ textarea:focus {
 }
 
 .sticky-compose-form textarea:focus {
-  background: var(--surface-strong);
+  background: transparent;
+  box-shadow: none;
 }
 
 .sticky-compose-form .send-button {
-  justify-self: end;
+  justify-self: center;
+  width: min(100%, 360px);
+  margin-top: 12px;
 }
 
 .sticky-admin-note {
+  justify-self: stretch;
   margin-top: -6px;
 }
 
 .sticky-admin-list {
   display: grid;
+  justify-self: stretch;
+  width: 100%;
   gap: 12px;
 }
 
@@ -1941,6 +2055,32 @@ textarea:focus {
 
   .sticky-password-form {
     grid-template-columns: 1fr;
+    width: 100%;
+  }
+
+  .sticky-duration-row {
+    grid-template-columns: 1fr minmax(122px, 0.42fr) !important;
+  }
+
+  .sticky-compose-form {
+    min-height: 410px;
+    padding: 38px 24px 24px;
+  }
+
+  .sticky-compose-form::before {
+    width: 104px;
+    height: 30px;
+  }
+
+  .sticky-compose-meta {
+    min-height: 58px;
+    gap: 16px;
+    font-size: 12px;
+  }
+
+  .sticky-compose-field,
+  .sticky-compose-form textarea {
+    min-height: 238px;
   }
 
   .sticky-password-actions {
@@ -1959,6 +2099,7 @@ textarea:focus {
 
   .sticky-compose-form .send-button {
     justify-self: stretch;
+    width: 100%;
   }
 
   .letter-box::before {

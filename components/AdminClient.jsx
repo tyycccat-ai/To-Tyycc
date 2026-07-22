@@ -173,9 +173,15 @@ function StickyAdmin() {
   const [editingId, setEditingId] = useState("");
   const [editContent, setEditContent] = useState("");
   const [stickyDeleteTarget, setStickyDeleteTarget] = useState(null);
+  const [composeMeta, setComposeMeta] = useState({ date: "", weekday: "" });
 
   useEffect(() => {
     loadStickyNotes();
+    const today = new Date();
+    setComposeMeta({
+      date: `${today.getFullYear()}.${String(today.getMonth() + 1).padStart(2, "0")}.${String(today.getDate()).padStart(2, "0")}`,
+      weekday: new Intl.DateTimeFormat("en-US", { weekday: "long" }).format(today)
+    });
   }, []);
 
   async function loadStickyNotes() {
@@ -291,11 +297,48 @@ function StickyAdmin() {
 
   return (
     <section className="sticky-admin-panel" aria-label="ToT 便利贴管理">
-      <form className="sticky-password-form" onSubmit={saveCustomPassword}>
-        <div className="sticky-password-header">
-          <span>发布设置</span>
+      <form className="sticky-compose-form" onSubmit={publishSticky}>
+        <div className="sticky-compose-tape" aria-hidden="true" />
+        <div className="sticky-compose-meta" aria-hidden="true">
+          <div className="sticky-compose-meta-item">
+            <div>
+              <time>{composeMeta.date}</time>
+              <span>{composeMeta.weekday}</span>
+            </div>
+          </div>
+          <div className="sticky-compose-meta-item sticky-compose-meta-place">
+            <span>ToT</span>
+          </div>
         </div>
+        <label className="sticky-compose-field">
+          <textarea
+            rows={4}
+            maxLength={2000}
+            aria-label="碎碎念"
+            placeholder="写一点现在想贴住的话..."
+            value={content}
+            onChange={(event) => setContent(event.target.value)}
+          />
+        </label>
+        <button type="submit" className="send-button" disabled={busyAction === "create"}>
+          <span>{busyAction === "create" ? "贴上中" : "贴上便利贴"}</span>
+        </button>
+      </form>
+
+      <form className="sticky-password-form" onSubmit={saveCustomPassword}>
         <label>
+          <span>密码（可自己设置，也可随机生成）</span>
+          <input
+            type="text"
+            autoComplete="off"
+            inputMode="numeric"
+            maxLength={6}
+            placeholder="输入6位密码"
+            value={customPassword}
+            onChange={(event) => setCustomPassword(event.target.value)}
+          />
+        </label>
+        <label className="sticky-duration-row">
           <span>有效时间</span>
           <select
             value={durationHours}
@@ -307,17 +350,6 @@ function StickyAdmin() {
             <option value="72">72 小时</option>
             <option value="168">7 天</option>
           </select>
-        </label>
-        <label>
-          <span>自设密码</span>
-          <input
-            type="text"
-            autoComplete="off"
-            maxLength={64}
-            placeholder="可以自己输入"
-            value={customPassword}
-            onChange={(event) => setCustomPassword(event.target.value)}
-          />
         </label>
         <div className="sticky-password-actions">
           <button
@@ -347,22 +379,6 @@ function StickyAdmin() {
           })}` : "未设置到期时间"}</time>
         </div>
       ) : null}
-
-      <form className="sticky-compose-form" onSubmit={publishSticky}>
-        <label>
-          <span>碎碎念</span>
-          <textarea
-            rows={4}
-            maxLength={2000}
-            placeholder="写一点现在想贴住的话"
-            value={content}
-            onChange={(event) => setContent(event.target.value)}
-          />
-        </label>
-        <button type="submit" className="send-button" disabled={busyAction === "create"}>
-          <span>{busyAction === "create" ? "贴上中" : "贴上便利贴"}</span>
-        </button>
-      </form>
 
       <p className={`form-note sticky-admin-note ${note ? "show" : ""}`} aria-live="polite">
         {note}
