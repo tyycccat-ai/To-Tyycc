@@ -226,15 +226,30 @@ function StickyAdmin() {
     setBusyAction(action);
     setNote("");
     let response;
+    const body = { durationHours, password: trimmedPassword };
     try {
       response = await requestJson("/api/admin/sticky-password", {
         method: "POST",
-        body: { durationHours, password: trimmedPassword }
+        body
       });
+      if (!response.ok && response.status !== 401) {
+        const fallback = await requestJson("/api/admin/sticky-password", {
+          method: "PATCH",
+          body
+        });
+        if (fallback.ok || fallback.status === 401) response = fallback;
+      }
     } catch {
-      setBusyAction("");
-      setNote("访问密码暂时保存不了，请稍后再试。");
-      return;
+      try {
+        response = await requestJson("/api/admin/sticky-password", {
+          method: "PATCH",
+          body
+        });
+      } catch {
+        setBusyAction("");
+        setNote("访问密码暂时保存不了，请稍后再试。");
+        return;
+      }
     }
     setBusyAction("");
     if (!response.ok) {
@@ -328,74 +343,74 @@ function StickyAdmin() {
         </button>
       </form>
 
-      <form className="sticky-password-form" onSubmit={saveCustomPassword}>
-        <h2 className="sticky-password-title">设置访问密码</h2>
-        <div className="sticky-password-mode" role="radiogroup" aria-label="访问密码设置方式">
-          <label>
-            <input
-              type="radio"
-              name="stickyPasswordMode"
-              value="custom"
-              checked={passwordMode === "custom"}
-              onChange={() => setPasswordMode("custom")}
-            />
-            <span>自己设置</span>
-          </label>
-          <label>
-            <input
-              type="radio"
-              name="stickyPasswordMode"
-              value="random"
-              checked={passwordMode === "random"}
-              onChange={() => setPasswordMode("random")}
-            />
-            <span>随机生成</span>
-          </label>
-        </div>
-        <label>
-          <input
-            type="text"
-            autoComplete="off"
-            inputMode="numeric"
-            pattern="[0-9]*"
-            maxLength={4}
-            placeholder={passwordMode === "random" ? "将自动生成4位密码" : "输入4位密码"}
-            value={customPassword}
-            disabled={passwordMode === "random"}
-            onChange={(event) => setCustomPassword(event.target.value.replace(/\D/g, "").slice(0, 4))}
-          />
-        </label>
-        <label className="sticky-duration-row">
-          <span>有效时间</span>
-          <select
-            value={durationHours}
-            onChange={(event) => setDurationHours(event.target.value)}
-          >
-            <option value="12">12 小时</option>
-            <option value="24">24 小时</option>
-            <option value="48">48 小时</option>
-            <option value="72">72 小时</option>
-            <option value="168">7 天</option>
-          </select>
-        </label>
-        <button
-          type="submit"
-          className="send-button sticky-password-submit"
-          disabled={Boolean(busyAction) || (passwordMode === "custom" && customPassword.length !== 4)}
-        >
-          <span>{busyAction === "password" || busyAction === "custom-password" ? "保存中" : "保存密码"}</span>
-        </button>
-      </form>
-      {passwordSet ? (
+      <section className="sticky-password-layout" aria-label="ToT 便利贴访问密码设置">
         <div className="sticky-password-card" aria-label="当前 ToT 便利贴访问密码">
-          <span>当前访问密码</span>
-          <strong>{currentPassword}</strong>
-          <time>{expiresAt ? `有效至 ${formatTime(expiresAt, {
+          <span>当前密码</span>
+          <strong>{passwordSet && currentPassword ? currentPassword : "----"}</strong>
+          <time>{passwordSet && expiresAt ? `有效至 ${formatTime(expiresAt, {
             dateStyle: "medium",
             timeStyle: "short"
-          })}` : "未设置到期时间"}</time>
+          })}` : "先保存一枚访问密码"}</time>
         </div>
-      ) : null}
+        <form className="sticky-password-form" onSubmit={saveCustomPassword}>
+          <h2 className="sticky-password-title">修改密码</h2>
+          <div className="sticky-password-mode" role="radiogroup" aria-label="访问密码设置方式">
+            <label>
+              <input
+                type="radio"
+                name="stickyPasswordMode"
+                value="custom"
+                checked={passwordMode === "custom"}
+                onChange={() => setPasswordMode("custom")}
+              />
+              <span>自己设置</span>
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="stickyPasswordMode"
+                value="random"
+                checked={passwordMode === "random"}
+                onChange={() => setPasswordMode("random")}
+              />
+              <span>随机生成</span>
+            </label>
+          </div>
+          <label>
+            <input
+              type="text"
+              autoComplete="off"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              maxLength={4}
+              placeholder={passwordMode === "random" ? "将自动生成4位密码" : "输入4位密码"}
+              value={customPassword}
+              disabled={passwordMode === "random"}
+              onChange={(event) => setCustomPassword(event.target.value.replace(/\D/g, "").slice(0, 4))}
+            />
+          </label>
+          <label className="sticky-duration-row">
+            <span>有效时间</span>
+            <select
+              value={durationHours}
+              onChange={(event) => setDurationHours(event.target.value)}
+            >
+              <option value="12">12 小时</option>
+              <option value="24">24 小时</option>
+              <option value="48">48 小时</option>
+              <option value="72">72 小时</option>
+              <option value="168">7 天</option>
+            </select>
+          </label>
+          <button
+            type="submit"
+            className="send-button sticky-password-submit"
+            disabled={Boolean(busyAction) || (passwordMode === "custom" && customPassword.length !== 4)}
+          >
+            <span>{busyAction === "password" || busyAction === "custom-password" ? "保存中" : "保存密码"}</span>
+          </button>
+        </form>
+      </section>
 
       <p className={`form-note sticky-admin-note ${note ? "show" : ""}`} aria-live="polite">
         {note}
