@@ -173,15 +173,12 @@ function StickyAdmin() {
   const [editingId, setEditingId] = useState("");
   const [editContent, setEditContent] = useState("");
   const [stickyDeleteTarget, setStickyDeleteTarget] = useState(null);
-  const [composeMeta, setComposeMeta] = useState({ date: "", weekday: "" });
+  const [composeDate, setComposeDate] = useState("");
 
   useEffect(() => {
     loadStickyNotes();
     const today = new Date();
-    setComposeMeta({
-      date: `${today.getFullYear()}.${String(today.getMonth() + 1).padStart(2, "0")}.${String(today.getDate()).padStart(2, "0")}`,
-      weekday: new Intl.DateTimeFormat("en-US", { weekday: "long" }).format(today)
-    });
+    setComposeDate(`${today.getFullYear()}.${String(today.getMonth() + 1).padStart(2, "0")}.${String(today.getDate()).padStart(2, "0")}`);
   }, []);
 
   async function loadStickyNotes() {
@@ -302,8 +299,7 @@ function StickyAdmin() {
         <div className="sticky-compose-meta" aria-hidden="true">
           <div className="sticky-compose-meta-item">
             <div>
-              <time>{composeMeta.date}</time>
-              <span>{composeMeta.weekday}</span>
+              <time>{composeDate}</time>
             </div>
           </div>
           <div className="sticky-compose-meta-item sticky-compose-meta-place">

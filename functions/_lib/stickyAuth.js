@@ -9,7 +9,7 @@ export const MAX_STICKY_PASSWORD_HOURS = 168;
 
 const HASH_ITERATIONS = 160000;
 const HASH_KEY_LENGTH = 32;
-const PASSWORD_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+const PASSWORD_ALPHABET = "0123456789";
 
 function textBytes(value) {
   return new TextEncoder().encode(value);
@@ -99,10 +99,10 @@ export function stickyPasswordDurationHours(value) {
 }
 
 export function generateStickyPassword() {
-  const data = new Uint8Array(8);
+  const data = new Uint8Array(6);
   crypto.getRandomValues(data);
   const chars = [...data].map((byte) => PASSWORD_ALPHABET[byte % PASSWORD_ALPHABET.length]);
-  return `ToT-${chars.slice(0, 4).join("")}-${chars.slice(4).join("")}`;
+  return chars.join("");
 }
 
 export async function createStickyPasswordSetting(
