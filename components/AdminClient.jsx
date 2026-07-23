@@ -238,7 +238,7 @@ function StickyAdmin() {
     }
     setBusyAction("");
     if (!response.ok) {
-      setNote(response.status === 401 ? "登录好像过期了，请重新进入管理页。" : "访问密码暂时保存不了");
+      setNote(response.status === 401 ? "登录好像过期了，请重新进入管理页。" : `访问密码暂时保存不了（${response.status}）`);
       return;
     }
     setPasswordSet(true);

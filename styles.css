@@ -1687,8 +1687,8 @@ textarea:focus {
   margin: 0;
   color: var(--subheading);
   font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
-  font-size: 18px;
-  font-weight: 750;
+  font-size: 13px;
+  font-weight: 650;
   line-height: 1.2;
   text-align: left;
 }
@@ -1711,15 +1711,15 @@ textarea:focus {
   position: relative;
   display: inline-flex;
   min-width: 0;
-  gap: 8px;
+  gap: 5px;
   align-items: center;
   justify-content: center;
   margin: 0;
   color: var(--text-soft);
   cursor: pointer;
   font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
-  font-size: 13px;
-  font-weight: 650;
+  font-size: 11.5px;
+  font-weight: 600;
   line-height: 1;
 }
 
@@ -1727,10 +1727,11 @@ textarea:focus {
   box-shadow: inset 1px 0 0 color-mix(in srgb, var(--surface-line) 62%, transparent);
 }
 
-.sticky-password-mode input {
-  width: 16px;
-  height: 16px;
+.sticky-password-form .sticky-password-mode input[type="radio"] {
+  width: 8px;
+  height: 8px;
   margin: 0;
+  padding: 0;
   accent-color: var(--rose);
   flex: 0 0 auto;
 }
