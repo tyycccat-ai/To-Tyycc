@@ -20,15 +20,15 @@ async function requestJson(url, options = {}) {
 
 function formatStickyDate(timestamp) {
   const date = new Date(timestamp);
-  if (Number.isNaN(date.getTime())) return { date: "", weekday: "" };
-  return {
-    date: new Intl.DateTimeFormat("zh-CN", {
-      year: "numeric",
-      month: "long",
-      day: "numeric"
-    }).format(date),
-    weekday: new Intl.DateTimeFormat("zh-CN", { weekday: "long" }).format(date)
-  };
+  if (Number.isNaN(date.getTime())) return "";
+  return new Intl.DateTimeFormat("zh-CN", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false
+  }).format(date);
 }
 
 export default function TotClient() {
@@ -100,7 +100,7 @@ export default function TotClient() {
 
   return (
     <main className="page-shell tot-shell" aria-labelledby="totTitle">
-      <section className="panel-page tot-panel">
+      <section className={`panel-page tot-panel ${authorized ? "tot-panel-open" : ""}`}>
         <header className="panel-header tot-header">
           <Link className="soft-link panel-back" href="/" prefetch>回到信箱</Link>
           <h1 id="totTitle">ToT 便利贴</h1>
@@ -144,12 +144,11 @@ export default function TotClient() {
             <div className="sticky-note-list">
               {notes.length ? (
                 notes.map((item) => {
-                  const dateParts = formatStickyDate(item.createdAt);
+                  const dateText = formatStickyDate(item.createdAt);
                   return (
                     <article className="tot-note-card" key={item.id}>
                       <div className="tot-note-meta">
-                        <time>{dateParts.date}</time>
-                        <span>{dateParts.weekday}</span>
+                        {dateText ? <time>{dateText}</time> : null}
                         {item.locationRegion ? <span>{item.locationRegion}</span> : null}
                       </div>
                       <p>{item.content}</p>
