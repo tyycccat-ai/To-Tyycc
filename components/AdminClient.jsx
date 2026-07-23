@@ -699,7 +699,7 @@ export default function AdminClient() {
     <main className={`page-shell admin-shell${!authorized || adminView === "menu" ? " admin-shell-entry" : ""}`} aria-labelledby="adminTitle">
       <section className="panel-page">
         <header className="panel-header">
-          <Link className="soft-link panel-back" href="/" prefetch>返回匿名信箱</Link>
+          <a className="soft-link panel-back" href="/">返回匿名信箱</a>
           <h1 id="adminTitle">
             {!authorized
               ? "Tyycc 的信箱"
