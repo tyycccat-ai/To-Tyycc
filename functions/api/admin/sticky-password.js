@@ -3,7 +3,7 @@ import { json, readJson } from "../../_lib/http";
 import { stickyPasswordDurationHours } from "../../_lib/stickyAuth";
 import { generateAndSaveStickyPassword } from "../../_lib/stickyNotes";
 
-export async function onRequestPatch({ request, env }) {
+async function updateStickyPassword({ request, env }) {
   try {
     if (!(await isAdminRequest(env, request))) {
       return json({ ok: false, error: "unauthorized" }, 401);
@@ -22,4 +22,12 @@ export async function onRequestPatch({ request, env }) {
   } catch {
     return json({ ok: false, error: "sticky_password_update_failed" }, 500);
   }
+}
+
+export async function onRequestPost(context) {
+  return updateStickyPassword(context);
+}
+
+export async function onRequestPatch(context) {
+  return updateStickyPassword(context);
 }

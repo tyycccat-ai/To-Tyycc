@@ -5,7 +5,7 @@ import { generateAndSaveStickyPassword } from "../../../../lib/stickyNotes";
 
 export const runtime = "nodejs";
 
-export async function PATCH(request) {
+async function updateStickyPassword(request) {
   try {
     if (!isAdminRequest(request)) {
       return NextResponse.json({ ok: false, error: "unauthorized" }, { status: 401 });
@@ -25,4 +25,12 @@ export async function PATCH(request) {
   } catch {
     return NextResponse.json({ ok: false, error: "sticky_password_update_failed" }, { status: 500 });
   }
+}
+
+export async function POST(request) {
+  return updateStickyPassword(request);
+}
+
+export async function PATCH(request) {
+  return updateStickyPassword(request);
 }

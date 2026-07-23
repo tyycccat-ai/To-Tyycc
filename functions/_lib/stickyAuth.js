@@ -99,7 +99,7 @@ export function stickyPasswordDurationHours(value) {
 }
 
 export function generateStickyPassword() {
-  const data = new Uint8Array(6);
+  const data = new Uint8Array(4);
   crypto.getRandomValues(data);
   const chars = [...data].map((byte) => PASSWORD_ALPHABET[byte % PASSWORD_ALPHABET.length]);
   return chars.join("");

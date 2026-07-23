@@ -165,6 +165,7 @@ function StickyAdmin() {
   const [content, setContent] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
   const [customPassword, setCustomPassword] = useState("");
+  const [passwordMode, setPasswordMode] = useState("custom");
   const [durationHours, setDurationHours] = useState("24");
   const [expiresAt, setExpiresAt] = useState("");
   const [passwordSet, setPasswordSet] = useState(false);
@@ -215,19 +216,29 @@ function StickyAdmin() {
     setContent("");
   }
 
-  async function saveStickyPassword(password = "") {
-    const trimmedPassword = String(password || "").trim();
-    if (password && !trimmedPassword) return;
-    const action = trimmedPassword ? "custom-password" : "password";
+  async function saveStickyPassword(password = "", { random = false } = {}) {
+    const trimmedPassword = random ? "" : String(password || "").trim();
+    if (!random && !/^\d{4}$/.test(trimmedPassword)) {
+      setNote("请输入4位数字密码，或切换为随机生成。");
+      return;
+    }
+    const action = random ? "password" : "custom-password";
     setBusyAction(action);
     setNote("");
-    const response = await requestJson("/api/admin/sticky-password", {
-      method: "PATCH",
-      body: { durationHours, password: trimmedPassword }
-    });
+    let response;
+    try {
+      response = await requestJson("/api/admin/sticky-password", {
+        method: "POST",
+        body: { durationHours, password: trimmedPassword }
+      });
+    } catch {
+      setBusyAction("");
+      setNote("访问密码暂时保存不了，请稍后再试。");
+      return;
+    }
     setBusyAction("");
     if (!response.ok) {
-      setNote(trimmedPassword ? "自设密码暂时保存不了" : "访问密码暂时生成不了");
+      setNote(response.status === 401 ? "登录好像过期了，请重新进入管理页。" : "访问密码暂时保存不了");
       return;
     }
     setPasswordSet(true);
@@ -235,16 +246,12 @@ function StickyAdmin() {
     setDurationHours(String(response.data.durationHours || durationHours));
     setExpiresAt(response.data.expiresAt || "");
     setCustomPassword("");
-    setNote(trimmedPassword ? "自设访问密码已经保存，旧口令会立刻失效。" : "新的访问密码已经生成，旧口令会立刻失效。");
-  }
-
-  async function generatePassword() {
-    await saveStickyPassword();
+    setNote(random ? "新的访问密码已经生成，旧口令会立刻失效。" : "自设访问密码已经保存，旧口令会立刻失效。");
   }
 
   async function saveCustomPassword(event) {
     event.preventDefault();
-    await saveStickyPassword(customPassword);
+    await saveStickyPassword(customPassword, { random: passwordMode === "random" });
   }
 
   function startEdit(item) {
@@ -322,16 +329,40 @@ function StickyAdmin() {
       </form>
 
       <form className="sticky-password-form" onSubmit={saveCustomPassword}>
+        <h2 className="sticky-password-title">设置访问密码</h2>
+        <div className="sticky-password-mode" role="radiogroup" aria-label="访问密码设置方式">
+          <label>
+            <input
+              type="radio"
+              name="stickyPasswordMode"
+              value="custom"
+              checked={passwordMode === "custom"}
+              onChange={() => setPasswordMode("custom")}
+            />
+            <span>自己设置</span>
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="stickyPasswordMode"
+              value="random"
+              checked={passwordMode === "random"}
+              onChange={() => setPasswordMode("random")}
+            />
+            <span>随机生成</span>
+          </label>
+        </div>
         <label>
-          <span>密码（可自己设置，也可随机生成）</span>
           <input
             type="text"
             autoComplete="off"
             inputMode="numeric"
-            maxLength={6}
-            placeholder="输入6位密码"
+            pattern="[0-9]*"
+            maxLength={4}
+            placeholder={passwordMode === "random" ? "将自动生成4位密码" : "输入4位密码"}
             value={customPassword}
-            onChange={(event) => setCustomPassword(event.target.value)}
+            disabled={passwordMode === "random"}
+            onChange={(event) => setCustomPassword(event.target.value.replace(/\D/g, "").slice(0, 4))}
           />
         </label>
         <label className="sticky-duration-row">
@@ -347,23 +378,13 @@ function StickyAdmin() {
             <option value="168">7 天</option>
           </select>
         </label>
-        <div className="sticky-password-actions">
-          <button
-            type="button"
-            className="text-button reply-confirm-button"
-            disabled={Boolean(busyAction)}
-            onClick={generatePassword}
-          >
-            {busyAction === "password" ? "生成中" : "随机生成"}
-          </button>
-          <button
-            type="submit"
-            className="text-button reply-confirm-button"
-            disabled={Boolean(busyAction) || !customPassword.trim()}
-          >
-            {busyAction === "custom-password" ? "保存中" : "保存自设密码"}
-          </button>
-        </div>
+        <button
+          type="submit"
+          className="send-button sticky-password-submit"
+          disabled={Boolean(busyAction) || (passwordMode === "custom" && customPassword.length !== 4)}
+        >
+          <span>{busyAction === "password" || busyAction === "custom-password" ? "保存中" : "保存密码"}</span>
+        </button>
       </form>
       {passwordSet ? (
         <div className="sticky-password-card" aria-label="当前 ToT 便利贴访问密码">
