@@ -1492,6 +1492,10 @@ textarea:focus {
   max-width: 520px;
 }
 
+.tot-shell .tot-panel-open {
+  max-width: 880px;
+}
+
 .tot-header {
   position: relative;
 }
@@ -1548,7 +1552,7 @@ textarea:focus {
 
 .sticky-board {
   display: grid;
-  gap: 14px;
+  gap: 16px;
 }
 
 .sticky-board-toolbar,
@@ -1571,39 +1575,97 @@ textarea:focus {
 
 .sticky-note-list {
   display: grid;
-  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  align-items: start;
+  gap: 24px 22px;
+  padding: 16px 4px 4px;
 }
 
 .tot-note-card {
   position: relative;
   display: grid;
-  gap: 12px;
-  padding: 20px;
-  border: 1px solid color-mix(in srgb, var(--rose) 12%, var(--surface-line));
-  border-radius: 8px;
+  min-height: 190px;
+  gap: 16px;
+  padding: 34px 22px 24px;
+  border: 0;
+  border-radius: 3px 3px 7px 7px;
   background:
-    linear-gradient(90deg, color-mix(in srgb, var(--rose) 5%, transparent), transparent 18px),
-    color-mix(in srgb, var(--surface) 88%, #fff8dc 12%);
-  box-shadow: var(--message-card-shadow);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.66), rgba(255, 250, 248, 0.34)),
+    color-mix(in srgb, #fff7f8 86%, var(--surface) 14%);
+  box-shadow:
+    0 18px 26px color-mix(in srgb, var(--rose) 12%, transparent),
+    0 3px 8px rgba(130, 96, 105, 0.07),
+    inset 0 0 0 1px color-mix(in srgb, var(--surface-line) 54%, transparent);
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% calc(100% - 11px),
+    96% calc(100% - 5px),
+    91% calc(100% - 10px),
+    85% 100%,
+    78% calc(100% - 7px),
+    70% calc(100% - 12px),
+    61% 100%,
+    53% calc(100% - 8px),
+    45% calc(100% - 3px),
+    37% calc(100% - 10px),
+    29% 100%,
+    20% calc(100% - 7px),
+    12% calc(100% - 12px),
+    5% calc(100% - 4px),
+    0 calc(100% - 10px)
+  );
   text-align: left;
+}
+
+.tot-note-card::before {
+  position: absolute;
+  top: 5px;
+  left: 50%;
+  z-index: 1;
+  width: 74px;
+  height: 22px;
+  border-radius: 2px;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.16) 0 2px,
+      transparent 2px 5px
+    ),
+    color-mix(in srgb, var(--pink-100) 64%, #fffaf2 36%);
+  box-shadow:
+    0 5px 12px color-mix(in srgb, var(--rose) 10%, transparent),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.32);
+  content: "";
+  opacity: 0.76;
+  transform: translateX(-50%) rotate(1.6deg);
 }
 
 .tot-note-card::after {
   position: absolute;
-  right: 0;
-  bottom: 0;
-  width: 28px;
-  height: 28px;
-  border-top-left-radius: 8px;
-  background:
-    linear-gradient(
-      135deg,
-      color-mix(in srgb, var(--pink-100) 82%, transparent),
-      color-mix(in srgb, var(--rose) 24%, transparent)
-    );
+  inset: 10px 12px auto;
+  height: 1px;
+  background: color-mix(in srgb, var(--surface-line) 44%, transparent);
   content: "";
-  clip-path: polygon(100% 0, 0 100%, 100% 100%);
-  opacity: 0.82;
+  opacity: 0.5;
+}
+
+.tot-note-card:nth-child(4n + 2) {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.64), rgba(255, 252, 246, 0.4)),
+    color-mix(in srgb, #fefaf2 88%, var(--surface) 12%);
+}
+
+.tot-note-card:nth-child(4n + 3) {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.66), rgba(251, 248, 255, 0.36)),
+    color-mix(in srgb, #f9f6fb 88%, var(--surface) 12%);
+}
+
+.tot-note-card:nth-child(4n) {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.68), rgba(248, 252, 250, 0.36)),
+    color-mix(in srgb, #f6faf8 88%, var(--surface) 12%);
 }
 
 .tot-note-card:nth-child(2n) {
@@ -1617,29 +1679,30 @@ textarea:focus {
 .tot-note-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px 10px;
   align-items: center;
-  color: var(--subheading);
+  color: var(--text-soft);
   font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
   font-size: 12px;
+  line-height: 1.45;
 }
 
 .tot-note-meta span,
 .tot-note-meta time {
   display: inline-flex;
-  min-height: 24px;
+  min-height: auto;
   align-items: center;
-  padding: 0 9px;
-  border: 1px solid color-mix(in srgb, var(--rose) 16%, transparent);
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--surface) 72%, transparent);
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
 }
 
 .tot-note-card p {
   margin: 0;
   color: var(--text);
-  font-size: 15px;
-  line-height: 1.85;
+  font-size: 14px;
+  line-height: 1.9;
   white-space: pre-wrap;
 }
 
